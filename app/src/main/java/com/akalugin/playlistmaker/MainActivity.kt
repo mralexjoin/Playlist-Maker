@@ -1,9 +1,8 @@
 package com.akalugin.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -11,17 +10,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<Button>(R.id.settings_button).setOnClickListener(
-            object : View.OnClickListener{
-                override fun onClick(v: View?) = showToastForButton(v!!)
+        NAVIGATION_MAP.forEach { (buttonId, activityClass) ->
+            findViewById<Button>(buttonId).setOnClickListener {
+                startActivity(Intent(this@MainActivity, activityClass.java))
             }
-        )
+        }
     }
 
-    private fun showToastForButton(view: View) =
-        Toast.makeText(
-            this,
-            "Нажата кнопка ${(view as Button).text}",
-            Toast.LENGTH_SHORT
-        ).show()
+    companion object {
+        val NAVIGATION_MAP = mapOf(
+            R.id.search_button to SearchActivity::class,
+            R.id.library_button to LibraryActivity::class,
+            R.id.settings_button to SettingsActivity::class,
+        )
+    }
 }

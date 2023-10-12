@@ -1,9 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:background="?attr/colorSecondary"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar"
+        app:navigationIcon="@drawable/arrow_back"
+        app:title="@string/search"
+        app:titleTextColor="?attr/colorOnSecondary" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/button_margin_padding"
+            android:layout_marginVertical="8dp"
+            android:background="@drawable/search_edit_text"
+            android:drawableStart="@drawable/search"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/ys_display_regular"
+            android:hint="@string/search"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="@dimen/search_edit_padding_vertical"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/search_edit_text_cursor"
+            android:textSize="@dimen/view_text_size" />
+
+        <ImageButton
+            android:id="@+id/clear_button"
+            style="@style/ClearButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/button_margin_padding"
+            android:background="@null"
+            android:contentDescription="@string/clear_button_description"
+            android:padding="@dimen/search_edit_padding_vertical"
+            android:src="@drawable/cancel" />
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SettingsItemStyle" parent="BaseSettingsItemStyle">
+        <item name="android:drawableTint">@color/white</item>
+        <item name="trackTint">@color/blue_light</item>
+        <item name="thumbTint">@color/blue</item>
+    </style>
+    <style name="EditTextStyle" parent="ThemeOverlay.Material3.TextInputEditText.FilledBox">
+        <item name="android:drawableTint">@color/black</item>
+        <item name="android:textColorHint">@color/black</item>
+    </style>
+    <style name="ClearButtonStyle">
+        <item name="tint">@color/black</item>
+    </style>
+</resources>

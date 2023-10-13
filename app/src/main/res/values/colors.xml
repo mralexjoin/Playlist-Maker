@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFFFF</color>
-    <color name="dark_text_color">#1A1B22</color>
-    <color name="activity_main_background">#3772E7</color>
+    <color name="black">#1A1B22</color>
+    <color name="blue">#3772E7</color>
+    <color name="blue_light">#9FBBF3</color>
+    <color name="gray">#AEAFB4</color>
+    <color name="gray_light">#E6E8EB</color>
 </resources>

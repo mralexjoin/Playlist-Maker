@@ -15,8 +15,11 @@
         app:titleTextColor="?attr/colorOnSecondary" />
 
     <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/night_theme_switch"
         style="@style/SettingsItemStyle"
-        android:text="@string/dark_theme" />
+        android:text="@string/dark_theme"
+        app:thumbTint="@color/thumb_selector"
+        app:trackTint="@color/track_selector" />
 
     <TextView
         android:id="@+id/share_button"

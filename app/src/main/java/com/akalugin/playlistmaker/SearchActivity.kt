@@ -13,10 +13,14 @@ import androidx.appcompat.widget.Toolbar
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
-    private lateinit var searchText: String
+    private var searchText: String? = null
+    private var inputMethodManager: InputMethodManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { finish() }
 
@@ -41,8 +45,6 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.apply {
                 text.clear()
 
-                val inputMethodManager =
-                    getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager?.hideSoftInputFromWindow(windowToken, 0)
             }
         }
@@ -58,6 +60,11 @@ class SearchActivity : AppCompatActivity() {
 
         outState.putInt(SEARCH_SELECTION_START, searchEditText.selectionStart)
         outState.putInt(SEARCH_SELECTION_END, searchEditText.selectionEnd)
+
+        outState.putBoolean(
+            SEARCH_INPUT_ACTIVE,
+            inputMethodManager?.isActive(searchEditText) ?: false
+        )
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -69,15 +76,20 @@ class SearchActivity : AppCompatActivity() {
         val selectionStart = savedInstanceState.getInt(SEARCH_SELECTION_START, 0)
         val selectionEnd = savedInstanceState.getInt(SEARCH_SELECTION_END, 0)
         searchEditText.setSelection(selectionStart, selectionEnd)
+
+        if (savedInstanceState.getBoolean(SEARCH_INPUT_ACTIVE, false)) {
+            inputMethodManager?.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     private fun updateClearButtonVisibility(clearButton: View) {
-        clearButton.visibility = if (searchText.isEmpty()) View.GONE else View.VISIBLE
+        clearButton.visibility = if (searchText.isNullOrEmpty()) View.GONE else View.VISIBLE
     }
 
     companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val SEARCH_SELECTION_START = "SEARCH_SELECTION_START"
-        const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
+        private const val SEARCH_TEXT = "SEARCH_TEXT"
+        private const val SEARCH_SELECTION_START = "SEARCH_SELECTION_START"
+        private const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
+        private const val SEARCH_INPUT_ACTIVE = "SEARCH_INPUT_ACTIVE"
     }
 }

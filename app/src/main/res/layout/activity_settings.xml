@@ -37,6 +37,6 @@
         android:id="@+id/user_agreement_button"
         style="@style/SettingsItemStyle"
         android:text="@string/user_agreement"
-        app:drawableEndCompat="@drawable/user_agreement" />
+        app:drawableEndCompat="@drawable/arrow_forward" />
 
 </LinearLayout>

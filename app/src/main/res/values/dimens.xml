@@ -9,4 +9,5 @@
     <dimen name="settings_padding_vertical">21dp</dimen>
     <dimen name="search_edit_padding_vertical">6dp</dimen>
     <dimen name="search_edit_corner_radius">8dp</dimen>
+    <dimen name="artwork_corner_radius">2dp</dimen>
 </resources>

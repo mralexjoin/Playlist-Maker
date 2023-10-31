@@ -11,9 +11,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mapOf(
-            R.id.search_button to SearchActivity::class,
-            R.id.library_button to LibraryActivity::class,
-            R.id.settings_button to SettingsActivity::class,
+            R.id.buttonSearch to SearchActivity::class,
+            R.id.buttonLibrary to LibraryActivity::class,
+            R.id.buttonSettings to SettingsActivity::class,
         ).forEach { (buttonId, activityClass) ->
             findViewById<Button>(buttonId).setOnClickListener {
                 startActivity(Intent(this@MainActivity, activityClass.java))

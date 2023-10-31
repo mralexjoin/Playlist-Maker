@@ -13,7 +13,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { finish() }
-        findViewById<TextView>(R.id.share_button).setOnClickListener {
+        findViewById<TextView>(R.id.textViewShare).setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.course_uri))
@@ -22,7 +22,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, null))
         }
 
-        findViewById<TextView>(R.id.support_button).setOnClickListener {
+        findViewById<TextView>(R.id.textViewSupport).setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_mail_address)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_mail_subject))
@@ -35,7 +35,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, null))
         }
 
-        findViewById<TextView>(R.id.user_agreement_button).setOnClickListener {
+        findViewById<TextView>(R.id.textViewUserAgreement).setOnClickListener {
             val intent =
                 Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.user_agreement_uri)))
 

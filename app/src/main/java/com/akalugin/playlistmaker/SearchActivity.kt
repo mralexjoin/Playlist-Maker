@@ -26,9 +26,9 @@ class SearchActivity : AppCompatActivity() {
 
         findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { finish() }
 
-        val clearButton = findViewById<ImageButton>(R.id.clear_button)
+        val clearButton = findViewById<ImageButton>(R.id.buttonClear)
 
-        searchEditText = findViewById(R.id.search_edit_text)
+        searchEditText = findViewById(R.id.editTextSearch)
         searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 s: CharSequence?, start: Int, count: Int, after: Int
@@ -91,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun createRecycler() {
-        val recycler: RecyclerView = findViewById(R.id.search_results_recycler)
+        val recycler: RecyclerView = findViewById(R.id.recyclerViewSearchResults)
 
         val tracks = arrayListOf(
             Track(

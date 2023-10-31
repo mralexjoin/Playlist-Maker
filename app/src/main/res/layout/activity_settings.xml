@@ -15,26 +15,26 @@
         app:titleTextColor="?attr/colorOnSecondary" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/night_theme_switch"
+        android:id="@+id/switchNightTheme"
         style="@style/SettingsItemStyle"
         android:text="@string/dark_theme"
         app:thumbTint="@color/thumb_selector"
         app:trackTint="@color/track_selector" />
 
     <TextView
-        android:id="@+id/share_button"
+        android:id="@+id/textViewShare"
         style="@style/SettingsItemStyle"
         android:text="@string/share"
         app:drawableEndCompat="@drawable/share" />
 
     <TextView
-        android:id="@+id/support_button"
+        android:id="@+id/textViewSupport"
         style="@style/SettingsItemStyle"
         android:text="@string/support"
         app:drawableEndCompat="@drawable/support" />
 
     <TextView
-        android:id="@+id/user_agreement_button"
+        android:id="@+id/textViewUserAgreement"
         style="@style/SettingsItemStyle"
         android:text="@string/user_agreement"
         app:drawableEndCompat="@drawable/arrow_forward" />

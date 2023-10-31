@@ -9,16 +9,18 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/Toolbar"
+        android:contentDescription="@string/search_toolbar_description"
         app:navigationIcon="@drawable/arrow_back"
         app:title="@string/search"
         app:titleTextColor="?attr/colorOnSecondary" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
         <EditText
-            android:id="@+id/search_edit_text"
+            android:id="@+id/editTextSearch"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +41,7 @@
             android:textSize="@dimen/view_text_size" />
 
         <ImageButton
-            android:id="@+id/clear_button"
+            android:id="@+id/buttonClear"
             style="@style/ClearButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,5 +52,10 @@
             android:padding="@dimen/search_edit_padding_vertical"
             android:src="@drawable/cancel" />
     </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

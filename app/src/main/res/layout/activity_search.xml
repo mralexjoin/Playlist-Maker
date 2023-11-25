@@ -20,7 +20,7 @@
         android:layout_marginBottom="16dp">
 
         <EditText
-            android:id="@+id/editTextSearch"
+            android:id="@+id/searchInputEditText"
             style="@style/EditTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:textSize="@dimen/view_text_size" />
 
         <ImageButton
-            android:id="@+id/buttonClear"
+            android:id="@+id/clearSearchButton"
             style="@style/ClearButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSearchResults"
+        android:id="@+id/searchResultsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

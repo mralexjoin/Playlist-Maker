@@ -8,7 +8,7 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/imageViewArtwork"
+        android:id="@+id/artworkImageView"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginStart="5dp"
@@ -18,69 +18,69 @@
         tools:src="@drawable/album_placeholder" />
 
     <TextView
-        android:id="@+id/textViewTrackName"
+        android:id="@+id/trackNameTextView"
         style="@style/TrackNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:textColor="?attr/colorOnSecondary"
         android:textSize="@dimen/view_text_size"
-        app:layout_constraintBottom_toTopOf="@id/textViewArtistName"
-        app:layout_constraintEnd_toStartOf="@id/imageViewForward"
-        app:layout_constraintStart_toEndOf="@id/imageViewArtwork"
+        app:layout_constraintBottom_toTopOf="@id/artistNameTextView"
+        app:layout_constraintEnd_toStartOf="@id/forwardImageView"
+        app:layout_constraintStart_toEndOf="@id/artworkImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Here Comes The Sun (Remastered 2009) Explicit" />
 
 
     <TextView
-        android:id="@+id/textViewArtistName"
+        android:id="@+id/artistNameTextView"
         style="@style/ArtistTimeTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imageViewDot"
+        app:layout_constraintEnd_toStartOf="@id/dotImageView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/textViewTrackName"
-        app:layout_constraintTop_toBottomOf="@id/textViewTrackName"
+        app:layout_constraintStart_toStartOf="@id/trackNameTextView"
+        app:layout_constraintTop_toBottomOf="@id/trackNameTextView"
         app:layout_constraintWidth_default="wrap"
         tools:text="The Beatles one two three four five six seven eight nine" />
 
     <ImageView
-        android:id="@+id/imageViewDot"
+        android:id="@+id/dotImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:importantForAccessibility="no"
         android:src="@drawable/dot"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewArtistName"
-        app:layout_constraintEnd_toStartOf="@id/textViewTrackTime"
-        app:layout_constraintStart_toEndOf="@id/textViewArtistName"
-        app:layout_constraintTop_toTopOf="@+id/textViewArtistName"
+        app:layout_constraintBottom_toBottomOf="@+id/artistNameTextView"
+        app:layout_constraintEnd_toStartOf="@id/trackTimeTextView"
+        app:layout_constraintStart_toEndOf="@id/artistNameTextView"
+        app:layout_constraintTop_toTopOf="@+id/artistNameTextView"
         app:tint="?attr/colorOnTertiary" />
 
     <TextView
-        android:id="@+id/textViewTrackTime"
+        android:id="@+id/trackTimeTextView"
         style="@style/ArtistTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@id/textViewArtistName"
-        app:layout_constraintEnd_toEndOf="@id/textViewTrackName"
-        app:layout_constraintStart_toEndOf="@id/imageViewDot"
+        app:layout_constraintBaseline_toBaselineOf="@id/artistNameTextView"
+        app:layout_constraintEnd_toEndOf="@id/trackNameTextView"
+        app:layout_constraintStart_toEndOf="@id/dotImageView"
         tools:text="4:01" />
 
 
     <ImageView
-        android:id="@+id/imageViewForward"
+        android:id="@+id/forwardImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
         android:contentDescription="@string/open_track_description"
         android:src="@drawable/arrow_forward"
-        app:layout_constraintBottom_toTopOf="@+id/imageViewDot"
+        app:layout_constraintBottom_toTopOf="@+id/dotImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTrackName"
+        app:layout_constraintTop_toBottomOf="@+id/trackNameTextView"
         app:tint="?attr/colorOnTertiary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

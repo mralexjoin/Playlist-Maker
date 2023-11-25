@@ -14,19 +14,19 @@
         app:titleTextColor="@color/white" />
 
     <Button
-        android:id="@+id/buttonSearch"
+        android:id="@+id/searchButton"
         style="@style/ActivityMainButtonStyle"
         android:text="@string/search"
         app:icon="@drawable/search" />
 
     <Button
-        android:id="@+id/buttonLibrary"
+        android:id="@+id/libraryButton"
         style="@style/ActivityMainButtonStyle"
         android:text="@string/library"
         app:icon="@drawable/library" />
 
     <Button
-        android:id="@+id/buttonSettings"
+        android:id="@+id/settingsButton"
         style="@style/ActivityMainButtonStyle"
         android:text="@string/settings"
         app:icon="@drawable/settings" />

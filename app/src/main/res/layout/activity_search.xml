@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSecondary"
@@ -31,6 +32,7 @@
             android:drawablePadding="10dp"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
@@ -53,9 +55,59 @@
             android:src="@drawable/cancel" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchResultsRecyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResultsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/nothingFoundTextView"
+            style="@style/SearchErrorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/nothing_found"
+            android:visibility="gone"
+            app:drawableTopCompat="@drawable/nothing_found"
+            tools:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/networkErrorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/SearchErrorTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/network_error"
+                app:drawableTopCompat="@drawable/network_error" />
+
+            <Button
+                android:id="@+id/updateSearchResultsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/ys_display_medium"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="10dp"
+                android:text="@string/update"
+                android:textAllCaps="false"
+                android:textColor="?attr/colorSecondary"
+                android:textSize="16sp"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:cornerRadius="54dp" />
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

@@ -16,4 +16,7 @@
     <string name="search_toolbar_description">Заголовок Поиск</string>
     <string name="artwork_description">Изображение обложки</string>
     <string name="open_track_description">Перейти к треку</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="network_error">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="update">Обновить</string>
 </resources>

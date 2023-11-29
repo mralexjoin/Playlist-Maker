@@ -2,13 +2,15 @@ package com.akalugin.playlistmaker
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akalugin.playlistmaker.databinding.ActivitySearchBinding
@@ -19,7 +21,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySearchBinding
+    private lateinit var clearButton: View
+    private lateinit var searchInputEditText: EditText
+    private lateinit var nothingFoundTextView: View
+    private lateinit var networkErrorLayout: ViewGroup
     private var searchText: String? = null
     private var inputMethodManager: InputMethodManager? = null
 
@@ -36,32 +41,25 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
+        val binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        val clearButton = binding.clearSearchButton
+        clearButton = binding.clearSearchButton
+        searchInputEditText = binding.searchInputEditText
+        nothingFoundTextView = binding.nothingFoundTextView
+        networkErrorLayout = binding.networkErrorLayout
 
-        val searchEditText = binding.searchInputEditText
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?, start: Int, count: Int, after: Int
-            ) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchText = s.toString()
-                updateClearButtonVisibility(clearButton)
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        searchInputEditText.doOnTextChanged { text, _, _, _ ->
+            searchText = text.toString()
+            updateClearButtonVisibility()
+        }
 
         clearButton.setOnClickListener {
-            searchEditText.apply {
+            searchInputEditText.apply {
                 text.clear()
 
                 inputMethodManager?.hideSoftInputFromWindow(windowToken, 0)
@@ -69,14 +67,14 @@ class SearchActivity : AppCompatActivity() {
             searchTracks()
         }
 
-        searchText = searchEditText.text.toString()
-        updateClearButtonVisibility(clearButton)
+        searchText = searchInputEditText.text.toString()
+        updateClearButtonVisibility()
 
         val recycler: RecyclerView = binding.searchResultsRecyclerView
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
-        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+        searchInputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchTracks()
                 true
@@ -92,33 +90,31 @@ class SearchActivity : AppCompatActivity() {
 
         outState.putString(SEARCH_TEXT, searchText)
 
-        val searchEditText = binding.searchInputEditText
-        outState.putInt(SEARCH_SELECTION_START, searchEditText.selectionStart)
-        outState.putInt(SEARCH_SELECTION_END, searchEditText.selectionEnd)
+        outState.putInt(SEARCH_SELECTION_START, searchInputEditText.selectionStart)
+        outState.putInt(SEARCH_SELECTION_END, searchInputEditText.selectionEnd)
 
         outState.putBoolean(
             SEARCH_INPUT_ACTIVE,
-            inputMethodManager?.isActive(searchEditText) ?: false
+            inputMethodManager?.isActive(searchInputEditText) ?: false
         )
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        val searchEditText = binding.searchInputEditText
         searchText = savedInstanceState.getString(SEARCH_TEXT, "")
-        searchEditText.setText(searchText)
+        searchInputEditText.setText(searchText)
 
         val selectionStart = savedInstanceState.getInt(SEARCH_SELECTION_START, 0)
         val selectionEnd = savedInstanceState.getInt(SEARCH_SELECTION_END, 0)
-        searchEditText.setSelection(selectionStart, selectionEnd)
+        searchInputEditText.setSelection(selectionStart, selectionEnd)
 
         if (savedInstanceState.getBoolean(SEARCH_INPUT_ACTIVE, false)) {
-            inputMethodManager?.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+            inputMethodManager?.showSoftInput(searchInputEditText, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
-    private fun updateClearButtonVisibility(clearButton: View) {
+    private fun updateClearButtonVisibility() {
         clearButton.visibility = if (searchText.isNullOrEmpty()) View.GONE else View.VISIBLE
     }
 
@@ -137,14 +133,14 @@ class SearchActivity : AppCompatActivity() {
 
                         val results = response.body()?.results
                         if (results.isNullOrEmpty()) {
-                            binding.nothingFoundTextView.visibility = View.VISIBLE
+                            nothingFoundTextView.isVisible = true
                         } else {
                             tracks.addAll(results)
-                            binding.nothingFoundTextView.visibility = View.GONE
+                            nothingFoundTextView.isVisible = false
                         }
                         adapter.notifyDataSetChanged()
 
-                        binding.networkErrorLayout.visibility = View.GONE
+                        networkErrorLayout.isVisible = false
                     } else {
                         showNetworkError(code.toString())
                     }
@@ -158,8 +154,8 @@ class SearchActivity : AppCompatActivity() {
             tracks.clear()
             adapter.notifyDataSetChanged()
 
-            binding.networkErrorLayout.visibility = View.GONE
-            binding.nothingFoundTextView.visibility = View.GONE
+            networkErrorLayout.isVisible = false
+            nothingFoundTextView.isVisible = false
         }
     }
 
@@ -167,8 +163,8 @@ class SearchActivity : AppCompatActivity() {
         tracks.clear()
         adapter.notifyDataSetChanged()
 
-        binding.networkErrorLayout.visibility = View.VISIBLE
-        binding.nothingFoundTextView.visibility = View.GONE
+        networkErrorLayout.isVisible = true
+        nothingFoundTextView.isVisible = false
 
         if (additionalMessage.isNotEmpty()) {
             Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
@@ -176,10 +172,10 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private const val SEARCH_TEXT = "SEARCH_TEXT"
-        private const val SEARCH_SELECTION_START = "SEARCH_SELECTION_START"
-        private const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
-        private const val SEARCH_INPUT_ACTIVE = "SEARCH_INPUT_ACTIVE"
+    private companion object {
+        const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_SELECTION_START = "SEARCH_SELECTION_START"
+        const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
+        const val SEARCH_INPUT_ACTIVE = "SEARCH_INPUT_ACTIVE"
     }
 }

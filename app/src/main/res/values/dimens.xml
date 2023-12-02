@@ -10,4 +10,5 @@
     <dimen name="search_edit_padding_vertical">6dp</dimen>
     <dimen name="search_edit_corner_radius">8dp</dimen>
     <dimen name="artwork_corner_radius">2dp</dimen>
+    <dimen name="search_activity_button_margin_top">24dp</dimen>
 </resources>

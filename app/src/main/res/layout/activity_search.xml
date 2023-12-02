@@ -17,8 +17,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/searchInputEditText"
@@ -62,7 +61,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchResultsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/nothingFoundTextView"
@@ -82,7 +83,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <TextView
                 style="@style/SearchErrorTextView"
@@ -94,18 +95,47 @@
 
             <Button
                 android:id="@+id/updateSearchResultsButton"
+                style="@style/SearchActivityButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/ys_display_medium"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="10dp"
-                android:text="@string/update"
-                android:textAllCaps="false"
-                android:textColor="?attr/colorSecondary"
-                android:textSize="16sp"
-                app:backgroundTint="?attr/colorSecondaryContainer"
-                app:cornerRadius="54dp" />
+                android:layout_marginTop="@dimen/search_activity_button_margin_top"
+                android:text="@string/update" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/searchHistoryLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/HeaderTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/you_searched" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searchHistoryRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/clearSearchHistoryButton"
+                style="@style/SearchActivityButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/search_activity_button_margin_top"
+                android:layout_marginBottom="24dp"
+                android:text="@string/clear_search_history" />
+
         </LinearLayout>
 
     </FrameLayout>

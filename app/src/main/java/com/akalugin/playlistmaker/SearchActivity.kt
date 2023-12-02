@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.akalugin.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,18 +24,22 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchInputEditText: EditText
     private lateinit var nothingFoundTextView: View
     private lateinit var networkErrorLayout: ViewGroup
+    private lateinit var searchHistoryLayout: ViewGroup
     private var searchText: String? = null
     private var inputMethodManager: InputMethodManager? = null
 
     private val itunesBaseURL = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(itunesBaseURL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit =
+        Retrofit.Builder().baseUrl(itunesBaseURL).addConverterFactory(GsonConverterFactory.create())
+            .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
 
-    private val tracks = arrayListOf<Track>()
-    private val adapter = TrackAdapter(tracks)
+    private val searchResultsAdapter = TrackAdapter()
+    private val searchHistoryAdapter = TrackAdapter()
+
+    private val searchHistory: SearchHistory by lazy {
+        SearchHistory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +55,15 @@ class SearchActivity : AppCompatActivity() {
         searchInputEditText = binding.searchInputEditText
         nothingFoundTextView = binding.nothingFoundTextView
         networkErrorLayout = binding.networkErrorLayout
+        searchHistoryLayout = binding.searchHistoryLayout
 
         searchInputEditText.doOnTextChanged { text, _, _, _ ->
             searchText = text.toString()
+            if (searchText.isNullOrEmpty()) {
+                clearSearchResults()
+            }
             updateClearButtonVisibility()
+            updateSearchHistoryVisibility()
         }
 
         clearButton.setOnClickListener {
@@ -70,9 +78,19 @@ class SearchActivity : AppCompatActivity() {
         searchText = searchInputEditText.text.toString()
         updateClearButtonVisibility()
 
-        val recycler: RecyclerView = binding.searchResultsRecyclerView
-        recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = adapter
+        searchResultsAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
+            searchHistory.add(track)
+            Toast.makeText(
+                applicationContext,
+                "Track added to history: ${track.artistName} ${track.trackName}",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        binding.searchResultsRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@SearchActivity)
+            adapter = searchResultsAdapter
+        }
 
         searchInputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -82,7 +100,24 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        searchInputEditText.setOnFocusChangeListener { _, _ ->
+            updateSearchHistoryVisibility()
+        }
+
         binding.updateSearchResultsButton.setOnClickListener { searchTracks() }
+
+        binding.searchHistoryRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@SearchActivity)
+            adapter = searchHistoryAdapter
+        }
+        searchHistory.onItemsChangedListener = SearchHistory.OnItemsChangedListener { tracks ->
+            searchHistoryAdapter.setItems(tracks)
+            updateSearchHistoryVisibility()
+        }
+
+        binding.clearSearchHistoryButton.setOnClickListener {
+            searchHistory.clear()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -94,8 +129,7 @@ class SearchActivity : AppCompatActivity() {
         outState.putInt(SEARCH_SELECTION_END, searchInputEditText.selectionEnd)
 
         outState.putBoolean(
-            SEARCH_INPUT_ACTIVE,
-            inputMethodManager?.isActive(searchInputEditText) ?: false
+            SEARCH_INPUT_ACTIVE, inputMethodManager?.isActive(searchInputEditText) ?: false
         )
     }
 
@@ -115,30 +149,34 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateClearButtonVisibility() {
-        clearButton.visibility = if (searchText.isNullOrEmpty()) View.GONE else View.VISIBLE
+        clearButton.isVisible = !searchText.isNullOrEmpty()
+    }
+
+    private fun updateSearchHistoryVisibility() {
+        searchHistoryLayout.isVisible = searchInputEditText.hasFocus()
+                && searchText.isNullOrEmpty()
+                && searchHistoryAdapter.itemCount > 0
     }
 
     private fun searchTracks() {
+        clearSearchResults()
         val text = searchText
 
         if (!text.isNullOrEmpty()) {
             iTunesService.search(text).enqueue(object : Callback<SearchResponse> {
                 override fun onResponse(
-                    call: Call<SearchResponse>,
-                    response: Response<SearchResponse>
+                    call: Call<SearchResponse>, response: Response<SearchResponse>
                 ) {
                     val code = response.code()
                     if (code == 200) {
-                        tracks.clear()
 
                         val results = response.body()?.results
                         if (results.isNullOrEmpty()) {
                             nothingFoundTextView.isVisible = true
                         } else {
-                            tracks.addAll(results)
+                            searchResultsAdapter.setItems(results)
                             nothingFoundTextView.isVisible = false
                         }
-                        adapter.notifyDataSetChanged()
 
                         networkErrorLayout.isVisible = false
                     } else {
@@ -151,24 +189,20 @@ class SearchActivity : AppCompatActivity() {
                 }
             })
         } else {
-            tracks.clear()
-            adapter.notifyDataSetChanged()
-
             networkErrorLayout.isVisible = false
             nothingFoundTextView.isVisible = false
         }
     }
 
-    fun showNetworkError(additionalMessage: String) {
-        tracks.clear()
-        adapter.notifyDataSetChanged()
+    private fun clearSearchResults() =
+        searchResultsAdapter.setItems(emptyList())
 
+    fun showNetworkError(additionalMessage: String) {
         networkErrorLayout.isVisible = true
         nothingFoundTextView.isVisible = false
 
         if (additionalMessage.isNotEmpty()) {
-            Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG).show()
         }
     }
 

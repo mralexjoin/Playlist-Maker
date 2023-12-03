@@ -28,9 +28,9 @@ class SearchActivity : AppCompatActivity() {
     private var searchText: String? = null
     private var inputMethodManager: InputMethodManager? = null
 
-    private val itunesBaseURL = "https://itunes.apple.com"
     private val retrofit =
-        Retrofit.Builder().baseUrl(itunesBaseURL).addConverterFactory(GsonConverterFactory.create())
+        Retrofit.Builder().baseUrl(I_TUNES_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
 
@@ -211,5 +211,6 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_SELECTION_START = "SEARCH_SELECTION_START"
         const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
         const val SEARCH_INPUT_ACTIVE = "SEARCH_INPUT_ACTIVE"
+        const val I_TUNES_BASE_URL = "https://itunes.apple.com"
     }
 }

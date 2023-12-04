@@ -21,7 +21,7 @@ class TrackViewHolder(
 
             val context = itemView.context
             val artworkCornerRadiusPx =
-                dpToPx(context.resources.getDimension(R.dimen.artwork_corner_radius), context)
+                dpToPx(context.resources.getDimension(R.dimen.track_view_artwork_corner_radius), context)
 
             Glide.with(itemView)
                 .load(model.artworkUrl100)

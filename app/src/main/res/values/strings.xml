@@ -21,4 +21,13 @@
     <string name="update">Обновить</string>
     <string name="you_searched">Вы искали</string>
     <string name="clear_search_history">Очистить историю</string>
+    <string name="duration">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="country">Страна</string>
+    <string name="genre">Жанр</string>
+    <string name="year">Год</string>
+    <string name="add_to_favorites_description">Добавить в избранное</string>
+    <string name="add_to_playlist_description">Добавить в плейлист</string>
+    <string name="play_content_description">Воспроизвести</string>
+    <string name="play_time_example">0:30</string>
 </resources>

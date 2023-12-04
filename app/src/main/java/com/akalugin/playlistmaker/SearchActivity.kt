@@ -1,6 +1,7 @@
 package com.akalugin.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -80,11 +81,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchResultsAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
             searchHistory.add(track)
-            Toast.makeText(
-                applicationContext,
-                "Track added to history: ${track.artistName} ${track.trackName}",
-                Toast.LENGTH_LONG
-            ).show()
+            playTrack(track)
         }
 
         binding.searchResultsRecyclerView.apply {
@@ -105,6 +102,10 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.updateSearchResultsButton.setOnClickListener { searchTracks() }
+
+        searchHistoryAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
+            playTrack(track)
+        }
 
         binding.searchHistoryRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@SearchActivity)
@@ -204,6 +205,13 @@ class SearchActivity : AppCompatActivity() {
         if (additionalMessage.isNotEmpty()) {
             Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun playTrack(track: Track) {
+        val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+            putExtra(AudioPlayerActivity.TRACK_KEY_EXTRA, track)
+        }
+        startActivity(intent)
     }
 
     private companion object {

@@ -18,7 +18,7 @@ class SearchHistory(context: Context) {
 
     fun add(track: Track) {
         val tracks: MutableList<Track> = load().toMutableList().apply {
-            removeIf { it.trackId == track.trackId }
+            removeAll { it.trackId == track.trackId }
             if (size >= MAX_SIZE)
                 removeLast()
             add(0, track)

@@ -76,6 +76,7 @@
         android:layout_marginTop="@dimen/audio_player_medium_margin"
         android:background="@null"
         android:contentDescription="@string/play_content_description"
+        android:enabled="false"
         android:scaleType="fitCenter"
         android:src="@drawable/play"
         app:layout_constraintDimensionRatio="1:1"
@@ -135,7 +136,7 @@
         app:layout_constraintGuide_end="20dp" />
 
     <TextView
-        android:id="@+id/playerTimeTextView"
+        android:id="@+id/currentPositionTextView"
         style="@style/MediumTextSizePlayerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -220,7 +221,7 @@
         app:layout_constraintEnd_toEndOf="@id/rightTrackInfoGuideline"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/trackInfoHeaderBarrier"
-        app:layout_constraintTop_toBottomOf="@id/playerTimeTextView"
+        app:layout_constraintTop_toBottomOf="@id/currentPositionTextView"
         app:layout_constraintVertical_bias="1.0"
         app:layout_constraintVertical_chainStyle="spread_inside"
         tools:text="5:35" />

@@ -1,8 +1,6 @@
 package com.akalugin.playlistmaker
 
 import java.io.Serializable
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 data class Track(
     val trackId: Int,
@@ -14,9 +12,10 @@ data class Track(
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
+    val previewUrl: String,
 ) : Serializable {
     val trackTime: String
-        get() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
+        get() = formatMilliseconds(trackTimeMillis)
 
     val releaseYear: String
         get() = releaseDate.substring(0, YEAR_LENGTH)

@@ -38,6 +38,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         audioPlayer.release()
+        mainThreadHandler?.removeCallbacksAndMessages(null)
     }
 
     private fun initTrackFields(track: Track) {
@@ -98,7 +99,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun updateCurrentPosition() {
         setCurrentPosition(audioPlayer.currentPosition)
-        mainThreadHandler?.postDelayed(updateCurrentPositionRunnable, UPDATE_PLAYER_ACTIVITY_DELAY)
+        mainThreadHandler?.postDelayed(updateCurrentPositionRunnable, UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
     }
 
     private fun stopUpdateCurrentPosition() {
@@ -110,7 +111,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val UPDATE_PLAYER_ACTIVITY_DELAY = 300L
+        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300L
 
         private const val BIG_ARTWORK_URL_SUFFIX = "512x512bb.jpg"
         const val TRACK_KEY_EXTRA = "track"

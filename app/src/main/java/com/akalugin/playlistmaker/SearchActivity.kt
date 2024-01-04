@@ -59,6 +59,11 @@ class SearchActivity : AppCompatActivity() {
         initSearchHistory()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mainThreadHandler?.removeCallbacksAndMessages(null)
+    }
+
     private fun initSearchInput() = binding.apply {
         searchInputEditText.doOnTextChanged { text, _, _, _ ->
             searchText = text.toString()
@@ -171,7 +176,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchDebounce() = mainThreadHandler?.apply {
         removeCallbacks(searchRunnable)
-        postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
     }
 
     private fun searchTracks() {
@@ -242,7 +247,7 @@ class SearchActivity : AppCompatActivity() {
     private fun clickDebounce() = isClickAllowed.also {
         if (isClickAllowed) {
             isClickAllowed = false
-            mainThreadHandler?.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            mainThreadHandler?.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MILLIS)
         }
     }
 
@@ -252,7 +257,7 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
         const val SEARCH_INPUT_ACTIVE = "SEARCH_INPUT_ACTIVE"
         const val I_TUNES_BASE_URL = "https://itunes.apple.com"
-        const val SEARCH_DEBOUNCE_DELAY = 2_000L
-        const val CLICK_DEBOUNCE_DELAY = 1_000L
+        const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2_000L
+        const val CLICK_DEBOUNCE_DELAY_MILLIS = 1_000L
     }
 }

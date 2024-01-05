@@ -16,4 +16,5 @@
     <dimen name="audio_player_medium_margin">16dp</dimen>
     <dimen name="player_small_buttons_size">51dp</dimen>
     <dimen name="player_artwork_corner_radius">8dp</dimen>
+    <dimen name="progress_bar_size">44dp</dimen>
 </resources>

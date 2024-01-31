@@ -1,20 +1,24 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.data.repository
 
 import android.media.MediaPlayer
+import com.akalugin.playlistmaker.domain.api.AudioPlayer
+import com.akalugin.playlistmaker.domain.api.AudioPlayer.State
 
-class AudioPlayer {
+class AudioPlayerImpl : AudioPlayer {
     private val mediaPlayer = MediaPlayer()
+
     private var state = State.DEFAULT
         set(value) {
             field = value
             onStateChangedListener?.onStateChanged(state)
         }
 
-    var onStateChangedListener: OnStateChangedListener? = null
-    val currentPosition
+    override var onStateChangedListener: AudioPlayer.OnStateChangedListener? = null
+
+    override val currentPosition: Int
         get() = mediaPlayer.currentPosition
 
-    fun prepare(dataSource: String) {
+    override fun prepare(dataSource: String) {
         mediaPlayer.setDataSource(dataSource)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -25,17 +29,12 @@ class AudioPlayer {
         }
     }
 
-    private fun start() {
-        mediaPlayer.start()
-        state = State.PLAYING
-    }
-
-    fun pause() {
+    override fun pause() {
         mediaPlayer.pause()
         state = State.PAUSED
     }
 
-    fun playbackControl() {
+    override fun playbackControl() {
         when (state) {
             State.PLAYING -> pause()
             State.PREPARED, State.PAUSED -> start()
@@ -43,18 +42,13 @@ class AudioPlayer {
         }
     }
 
-    fun release() {
+    override fun release() {
         mediaPlayer.release()
     }
 
-    fun interface OnStateChangedListener {
-        fun onStateChanged(state: State)
+    private fun start() {
+        mediaPlayer.start()
+        state = State.PLAYING
     }
 
-    enum class State {
-        DEFAULT,
-        PREPARED,
-        PLAYING,
-        PAUSED
-    }
 }

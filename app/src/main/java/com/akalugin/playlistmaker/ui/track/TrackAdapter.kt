@@ -1,8 +1,9 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui.track
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.akalugin.playlistmaker.domain.models.Track
 
 class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder>() {
     private var tracks = listOf<Track>()

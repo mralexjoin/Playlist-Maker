@@ -1,18 +1,25 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.akalugin.playlistmaker.Creator
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.akalugin.playlistmaker.domain.api.AudioPlayer
+import com.akalugin.playlistmaker.domain.formatter.Formatter
+import com.akalugin.playlistmaker.domain.models.Track
+import com.akalugin.playlistmaker.presentation.Utils.dpToPx
+import com.akalugin.playlistmaker.presentation.Utils.serializable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
 
-    private val audioPlayer = AudioPlayer()
+    private val audioPlayerInteractor = Creator.provideAudioPlayerInteractor()
     private var mainThreadHandler: Handler? = null
     private val updateCurrentPositionRunnable = Runnable { updateCurrentPosition() }
 
@@ -32,12 +39,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        audioPlayer.pause()
+        audioPlayerInteractor.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        audioPlayer.release()
+        audioPlayerInteractor.release()
         mainThreadHandler?.removeCallbacksAndMessages(null)
     }
 
@@ -73,9 +80,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun initAudioPlayer(previewUrl: String) {
         val playButton = binding.playButton
 
-        audioPlayer.apply {
-            onStateChangedListener =
-                AudioPlayer.OnStateChangedListener { state ->
+        audioPlayerInteractor.apply {
+            onStateChangedListener = object : AudioPlayer.OnStateChangedListener {
+                override fun onStateChanged(state: AudioPlayer.State) {
                     if (state == AudioPlayer.State.PLAYING) {
                         playButton.setImageResource(R.drawable.pause)
                         updateCurrentPosition()
@@ -89,16 +96,17 @@ class AudioPlayerActivity : AppCompatActivity() {
                         }
                     }
                 }
+            }
             prepare(previewUrl)
         }
 
         playButton.setOnClickListener {
-            audioPlayer.playbackControl()
+            audioPlayerInteractor.playbackControl()
         }
     }
 
     private fun updateCurrentPosition() {
-        setCurrentPosition(audioPlayer.currentPosition)
+        setCurrentPosition(audioPlayerInteractor.currentPosition)
         mainThreadHandler?.postDelayed(updateCurrentPositionRunnable, UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
     }
 
@@ -107,7 +115,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun setCurrentPosition(currentPosition: Int) {
-        binding.currentPositionTextView.text = formatMilliseconds(currentPosition)
+        binding.currentPositionTextView.text = Formatter.formatMilliseconds(currentPosition)
     }
 
     companion object {

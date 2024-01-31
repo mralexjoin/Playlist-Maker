@@ -1,9 +1,12 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui.track
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.TrackViewBinding
+import com.akalugin.playlistmaker.domain.models.Track
+import com.akalugin.playlistmaker.presentation.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
@@ -21,7 +24,7 @@ class TrackViewHolder(
 
             val context = itemView.context
             val artworkCornerRadiusPx =
-                dpToPx(context.resources.getDimension(R.dimen.track_view_artwork_corner_radius), context)
+                Utils.dpToPx(context.resources.getDimension(R.dimen.track_view_artwork_corner_radius), context)
 
             Glide.with(itemView)
                 .load(model.artworkUrl100)

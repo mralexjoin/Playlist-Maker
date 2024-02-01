@@ -1,4 +1,4 @@
-package com.akalugin.playlistmaker.domain.api
+package com.akalugin.playlistmaker.domain.api.search_history
 
 import com.akalugin.playlistmaker.domain.models.Track
 

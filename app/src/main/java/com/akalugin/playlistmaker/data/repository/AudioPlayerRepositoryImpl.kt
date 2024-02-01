@@ -1,19 +1,17 @@
 package com.akalugin.playlistmaker.data.repository
 
 import android.media.MediaPlayer
-import com.akalugin.playlistmaker.domain.api.AudioPlayer
-import com.akalugin.playlistmaker.domain.api.AudioPlayer.State
+import com.akalugin.playlistmaker.domain.api.audio_player.AudioPlayerRepository
+import com.akalugin.playlistmaker.domain.models.AudioPlayerState
 
-class AudioPlayerImpl : AudioPlayer {
-    private val mediaPlayer = MediaPlayer()
-
-    private var state = State.DEFAULT
+class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : AudioPlayerRepository {
+    private var state = AudioPlayerState.DEFAULT
         set(value) {
             field = value
             onStateChangedListener?.onStateChanged(state)
         }
 
-    override var onStateChangedListener: AudioPlayer.OnStateChangedListener? = null
+    override var onStateChangedListener: AudioPlayerRepository.OnStateChangedListener? = null
 
     override val currentPosition: Int
         get() = mediaPlayer.currentPosition
@@ -22,23 +20,23 @@ class AudioPlayerImpl : AudioPlayer {
         mediaPlayer.setDataSource(dataSource)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            state = State.PREPARED
+            state = AudioPlayerState.PREPARED
         }
         mediaPlayer.setOnCompletionListener {
-            state = State.PREPARED
+            state = AudioPlayerState.PREPARED
         }
     }
 
     override fun pause() {
         mediaPlayer.pause()
-        state = State.PAUSED
+        state = AudioPlayerState.PAUSED
     }
 
     override fun playbackControl() {
         when (state) {
-            State.PLAYING -> pause()
-            State.PREPARED, State.PAUSED -> start()
-            State.DEFAULT -> throw IllegalStateException("AudioPlayer must be prepared before start")
+            AudioPlayerState.PLAYING -> pause()
+            AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> start()
+            AudioPlayerState.DEFAULT -> throw IllegalStateException("AudioPlayer must be prepared before start")
         }
     }
 
@@ -48,7 +46,7 @@ class AudioPlayerImpl : AudioPlayer {
 
     private fun start() {
         mediaPlayer.start()
-        state = State.PLAYING
+        state = AudioPlayerState.PLAYING
     }
 
 }

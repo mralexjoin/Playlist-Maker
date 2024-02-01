@@ -1,7 +1,7 @@
 package com.akalugin.playlistmaker.data.repository
 
 import android.content.Context
-import com.akalugin.playlistmaker.domain.api.SearchHistoryRepository
+import com.akalugin.playlistmaker.domain.api.search_history.SearchHistoryRepository
 import com.akalugin.playlistmaker.domain.models.Track
 import com.akalugin.playlistmaker.domain.settings.Settings.PLAYLIST_MAKER_PREFERENCES
 import com.google.gson.Gson

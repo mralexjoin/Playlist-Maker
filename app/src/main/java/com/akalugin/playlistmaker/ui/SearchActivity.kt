@@ -13,7 +13,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akalugin.playlistmaker.Creator
 import com.akalugin.playlistmaker.databinding.ActivitySearchBinding
-import com.akalugin.playlistmaker.domain.api.SearchHistoryRepository
+import com.akalugin.playlistmaker.domain.api.search_history.SearchHistoryInteractor
 import com.akalugin.playlistmaker.domain.consumer.Consumer
 import com.akalugin.playlistmaker.domain.consumer.ConsumerData
 import com.akalugin.playlistmaker.domain.models.Track
@@ -37,8 +37,8 @@ class SearchActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
 
-    private val searchHistoryRepository: SearchHistoryRepository by lazy {
-        Creator.provideSearchHistoryRepository(this.applicationContext)
+    private val searchHistoryInteractor: SearchHistoryInteractor by lazy {
+        Creator.provideSearchHistoryInteractor(this.applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initSearchResults() {
         searchResultsAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
             if (clickDebounce()) {
-                searchHistoryRepository.add(track)
+                searchHistoryInteractor.addTrack(track)
                 playTrack(track)
             }
         }
@@ -122,8 +122,8 @@ class SearchActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SearchActivity)
             adapter = searchHistoryAdapter
         }
-        searchHistoryRepository.onItemsChangedListener =
-            object : SearchHistoryRepository.OnItemsChangedListener {
+        searchHistoryInteractor.onItemsChangedListener =
+            object : SearchHistoryInteractor.OnItemsChangedListener {
                 override fun onItemsChanged(tracks: List<Track>) {
                     searchHistoryAdapter.setItems(tracks)
                     updateSearchHistoryVisibility()
@@ -131,7 +131,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
         binding.clearSearchHistoryButton.setOnClickListener {
-            searchHistoryRepository.clear()
+            searchHistoryInteractor.clearTracks()
         }
     }
 

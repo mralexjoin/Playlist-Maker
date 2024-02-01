@@ -8,8 +8,9 @@ import androidx.core.view.isVisible
 import com.akalugin.playlistmaker.Creator
 import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.akalugin.playlistmaker.domain.api.AudioPlayer
+import com.akalugin.playlistmaker.domain.api.audio_player.AudioPlayerInteractor
 import com.akalugin.playlistmaker.domain.formatter.Formatter
+import com.akalugin.playlistmaker.domain.models.AudioPlayerState
 import com.akalugin.playlistmaker.domain.models.Track
 import com.akalugin.playlistmaker.presentation.Utils.dpToPx
 import com.akalugin.playlistmaker.presentation.Utils.serializable
@@ -30,6 +31,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mainThreadHandler = Handler(Looper.getMainLooper())
+
+        setCurrentPosition(0)
 
         intent.serializable<Track>(TRACK_KEY_EXTRA)!!.let {
             initTrackFields(it)
@@ -81,16 +84,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         val playButton = binding.playButton
 
         audioPlayerInteractor.apply {
-            onStateChangedListener = object : AudioPlayer.OnStateChangedListener {
-                override fun onStateChanged(state: AudioPlayer.State) {
-                    if (state == AudioPlayer.State.PLAYING) {
+            onStateChangedListener = object : AudioPlayerInteractor.OnStateChangedListener {
+                override fun onStateChanged(state: AudioPlayerState) {
+                    if (state == AudioPlayerState.PLAYING) {
                         playButton.setImageResource(R.drawable.pause)
                         updateCurrentPosition()
                     } else {
                         playButton.setImageResource(R.drawable.play)
                         stopUpdateCurrentPosition()
 
-                        if (state == AudioPlayer.State.PREPARED) {
+                        if (state == AudioPlayerState.PREPARED) {
                             playButton.isEnabled = true
                             setCurrentPosition(0)
                         }
@@ -106,8 +109,11 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun updateCurrentPosition() {
-        setCurrentPosition(audioPlayerInteractor.currentPosition)
-        mainThreadHandler?.postDelayed(updateCurrentPositionRunnable, UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
+        setCurrentPosition(audioPlayerInteractor.currentPosition + UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
+        mainThreadHandler?.postDelayed(
+            updateCurrentPositionRunnable,
+            UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS.toLong()
+        )
     }
 
     private fun stopUpdateCurrentPosition() {
@@ -119,7 +125,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300L
+        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300
 
         private const val BIG_ARTWORK_URL_SUFFIX = "512x512bb.jpg"
         const val TRACK_KEY_EXTRA = "track"

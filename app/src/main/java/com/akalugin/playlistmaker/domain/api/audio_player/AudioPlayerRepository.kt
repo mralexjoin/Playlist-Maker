@@ -1,6 +1,8 @@
-package com.akalugin.playlistmaker.domain.api
+package com.akalugin.playlistmaker.domain.api.audio_player
 
-interface AudioPlayer {
+import com.akalugin.playlistmaker.domain.models.AudioPlayerState
+
+interface AudioPlayerRepository {
     var onStateChangedListener: OnStateChangedListener?
     val currentPosition: Int
 
@@ -8,14 +10,8 @@ interface AudioPlayer {
     fun playbackControl()
     fun pause()
     fun release()
-    enum class State {
-        DEFAULT,
-        PREPARED,
-        PLAYING,
-        PAUSED
-    }
 
     interface OnStateChangedListener {
-        fun onStateChanged(state: State)
+        fun onStateChanged(state: AudioPlayerState)
     }
 }

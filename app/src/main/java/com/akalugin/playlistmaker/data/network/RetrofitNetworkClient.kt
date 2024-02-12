@@ -1,7 +1,6 @@
 package com.akalugin.playlistmaker.data.network
 
 import com.akalugin.playlistmaker.data.NetworkClient
-import com.akalugin.playlistmaker.data.dto.NetworkRequest
 import com.akalugin.playlistmaker.data.dto.NetworkResponse
 import com.akalugin.playlistmaker.data.dto.TrackSearchRequest
 import retrofit2.Retrofit
@@ -20,12 +19,13 @@ object RetrofitNetworkClient : NetworkClient {
         client.create(ITunesRetrofitApiService::class.java)
     }
 
-    override fun doRequest(request: NetworkRequest): NetworkResponse =
+    override fun doRequest(request: Any): NetworkResponse =
         when (request) {
             is TrackSearchRequest -> {
                 val response = api.searchTrack(request.expression).execute()
                 val body = response.body() ?: NetworkResponse()
                 body.apply { resultCode = response.code() }
             }
+            else -> NetworkResponse().apply { resultCode = 400 }
         }
 }

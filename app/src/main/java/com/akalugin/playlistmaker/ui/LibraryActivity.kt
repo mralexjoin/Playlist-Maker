@@ -1,7 +1,8 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.akalugin.playlistmaker.R
 
 class LibraryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

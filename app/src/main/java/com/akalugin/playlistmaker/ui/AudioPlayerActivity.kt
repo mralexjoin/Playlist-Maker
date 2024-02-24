@@ -1,18 +1,26 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.akalugin.playlistmaker.Creator
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.akalugin.playlistmaker.domain.api.audio_player.AudioPlayerInteractor
+import com.akalugin.playlistmaker.domain.formatter.Formatter
+import com.akalugin.playlistmaker.domain.models.AudioPlayerState
+import com.akalugin.playlistmaker.domain.models.Track
+import com.akalugin.playlistmaker.presentation.Utils.dpToPx
+import com.akalugin.playlistmaker.presentation.Utils.serializable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
 
-    private val audioPlayer = AudioPlayer()
+    private val audioPlayerInteractor = Creator.provideAudioPlayerInteractor()
     private var mainThreadHandler: Handler? = null
     private val updateCurrentPositionRunnable = Runnable { updateCurrentPosition() }
 
@@ -24,6 +32,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         mainThreadHandler = Handler(Looper.getMainLooper())
 
+        setCurrentPosition(0)
+
         intent.serializable<Track>(TRACK_KEY_EXTRA)!!.let {
             initTrackFields(it)
             initAudioPlayer(it.previewUrl)
@@ -32,12 +42,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        audioPlayer.pause()
+        audioPlayerInteractor.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        audioPlayer.release()
+        audioPlayerInteractor.release()
         mainThreadHandler?.removeCallbacksAndMessages(null)
     }
 
@@ -73,33 +83,37 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun initAudioPlayer(previewUrl: String) {
         val playButton = binding.playButton
 
-        audioPlayer.apply {
-            onStateChangedListener =
-                AudioPlayer.OnStateChangedListener { state ->
-                    if (state == AudioPlayer.State.PLAYING) {
+        audioPlayerInteractor.apply {
+            onStateChangedListener = object : AudioPlayerInteractor.OnStateChangedListener {
+                override fun onStateChanged(state: AudioPlayerState) {
+                    if (state == AudioPlayerState.PLAYING) {
                         playButton.setImageResource(R.drawable.pause)
                         updateCurrentPosition()
                     } else {
                         playButton.setImageResource(R.drawable.play)
                         stopUpdateCurrentPosition()
 
-                        if (state == AudioPlayer.State.PREPARED) {
+                        if (state == AudioPlayerState.PREPARED) {
                             playButton.isEnabled = true
                             setCurrentPosition(0)
                         }
                     }
                 }
+            }
             prepare(previewUrl)
         }
 
         playButton.setOnClickListener {
-            audioPlayer.playbackControl()
+            audioPlayerInteractor.playbackControl()
         }
     }
 
     private fun updateCurrentPosition() {
-        setCurrentPosition(audioPlayer.currentPosition)
-        mainThreadHandler?.postDelayed(updateCurrentPositionRunnable, UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
+        setCurrentPosition(audioPlayerInteractor.currentPosition + UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
+        mainThreadHandler?.postDelayed(
+            updateCurrentPositionRunnable,
+            UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS.toLong()
+        )
     }
 
     private fun stopUpdateCurrentPosition() {
@@ -107,11 +121,11 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun setCurrentPosition(currentPosition: Int) {
-        binding.currentPositionTextView.text = formatMilliseconds(currentPosition)
+        binding.currentPositionTextView.text = Formatter.formatMilliseconds(currentPosition)
     }
 
     companion object {
-        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300L
+        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300
 
         private const val BIG_ARTWORK_URL_SUFFIX = "512x512bb.jpg"
         const val TRACK_KEY_EXTRA = "track"

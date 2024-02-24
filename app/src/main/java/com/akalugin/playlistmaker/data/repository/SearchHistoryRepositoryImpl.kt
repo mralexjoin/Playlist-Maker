@@ -1,22 +1,25 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.data.repository
 
 import android.content.Context
+import com.akalugin.playlistmaker.domain.api.search_history.SearchHistoryRepository
+import com.akalugin.playlistmaker.domain.models.Track
+import com.akalugin.playlistmaker.domain.settings.Settings.PLAYLIST_MAKER_PREFERENCES
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistory(context: Context) {
+class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
     private val sharedPreferences =
         context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE)
     private val gson = Gson()
     private val listOfTracksType = object : TypeToken<List<Track>>() {}.type
 
-    var onItemsChangedListener: OnItemsChangedListener? = null
+    override var onItemsChangedListener: SearchHistoryRepository.OnItemsChangedListener? = null
         set(value) {
             field = value
             onItemsChangedListener?.onItemsChanged(load())
         }
 
-    fun add(track: Track) {
+    override fun add(track: Track) {
         val tracks: MutableList<Track> = load().toMutableList().apply {
             removeAll { it.trackId == track.trackId }
             if (size >= MAX_SIZE)
@@ -27,7 +30,7 @@ class SearchHistory(context: Context) {
         save(tracks)
     }
 
-    fun clear() {
+    override fun clear() {
         save(emptyList())
     }
 
@@ -50,7 +53,4 @@ class SearchHistory(context: Context) {
         const val MAX_SIZE = 10
     }
 
-    fun interface OnItemsChangedListener {
-        fun onItemsChanged(tracks: List<Track>)
-    }
 }

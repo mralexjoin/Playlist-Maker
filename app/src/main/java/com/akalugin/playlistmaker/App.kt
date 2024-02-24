@@ -2,9 +2,7 @@ package com.akalugin.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-
-const val PLAYLIST_MAKER_PREFERENCES = "playlist_maker_preferences"
-const val KEY_DARK_THEME = "dark_theme"
+import com.akalugin.playlistmaker.domain.settings.Settings.PLAYLIST_MAKER_PREFERENCES
 
 class App : Application() {
     var darkTheme = false
@@ -32,5 +30,9 @@ class App : Application() {
         getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, MODE_PRIVATE).edit()
             .putBoolean(KEY_DARK_THEME, darkTheme)
             .apply()
+    }
+
+    private companion object {
+        const val KEY_DARK_THEME = "dark_theme"
     }
 }

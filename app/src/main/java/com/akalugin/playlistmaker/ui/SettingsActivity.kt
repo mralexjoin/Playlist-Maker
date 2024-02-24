@@ -1,9 +1,11 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.akalugin.playlistmaker.App
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {

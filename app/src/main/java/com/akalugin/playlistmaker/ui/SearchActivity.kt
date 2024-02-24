@@ -1,4 +1,4 @@
-package com.akalugin.playlistmaker
+package com.akalugin.playlistmaker.ui
 
 import android.content.Context
 import android.content.Intent
@@ -11,12 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akalugin.playlistmaker.Creator
 import com.akalugin.playlistmaker.databinding.ActivitySearchBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.akalugin.playlistmaker.domain.api.search_history.SearchHistoryInteractor
+import com.akalugin.playlistmaker.domain.consumer.Consumer
+import com.akalugin.playlistmaker.domain.consumer.ConsumerData
+import com.akalugin.playlistmaker.domain.models.Track
+import com.akalugin.playlistmaker.ui.track.TrackAdapter
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
@@ -28,19 +29,16 @@ class SearchActivity : AppCompatActivity() {
     private var mainThreadHandler: Handler? = null
     private val searchRunnable = Runnable { searchTracks() }
 
-    private val retrofit =
-        Retrofit.Builder().baseUrl(I_TUNES_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    private val iTunesService = retrofit.create(ITunesApi::class.java)
+    private val tracksInteractor = Creator.provideTracksInteractor()
+    private var updateTracksRunnable: Runnable? = null
 
     private val searchResultsAdapter = TrackAdapter()
     private val searchHistoryAdapter = TrackAdapter()
 
     private var isClickAllowed = true
 
-    private val searchHistory: SearchHistory by lazy {
-        SearchHistory(this)
+    private val searchHistoryInteractor: SearchHistoryInteractor by lazy {
+        Creator.provideSearchHistoryInteractor(this.applicationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initSearchResults() {
         searchResultsAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
             if (clickDebounce()) {
-                searchHistory.add(track)
+                searchHistoryInteractor.addTrack(track)
                 playTrack(track)
             }
         }
@@ -124,13 +122,16 @@ class SearchActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@SearchActivity)
             adapter = searchHistoryAdapter
         }
-        searchHistory.onItemsChangedListener = SearchHistory.OnItemsChangedListener { tracks ->
-            searchHistoryAdapter.setItems(tracks)
-            updateSearchHistoryVisibility()
-        }
+        searchHistoryInteractor.onItemsChangedListener =
+            object : SearchHistoryInteractor.OnItemsChangedListener {
+                override fun onItemsChanged(tracks: List<Track>) {
+                    searchHistoryAdapter.setItems(tracks)
+                    updateSearchHistoryVisibility()
+                }
+            }
 
         binding.clearSearchHistoryButton.setOnClickListener {
-            searchHistory.clear()
+            searchHistoryInteractor.clearTracks()
         }
     }
 
@@ -193,31 +194,34 @@ class SearchActivity : AppCompatActivity() {
                 searchProgressBar.isVisible = true
             }
 
-            iTunesService.search(text).enqueue(object : Callback<SearchResponse> {
-                override fun onResponse(
-                    call: Call<SearchResponse>, response: Response<SearchResponse>
-                ) {
-                    binding.searchProgressBar.isVisible = false
-                    val code = response.code()
-                    if (code == 200) {
-                        val results = response.body()?.results
-                        if (results.isNullOrEmpty()) {
-                            binding.nothingFoundTextView.isVisible = true
-                        } else {
-                            binding.searchResultsRecyclerView.isVisible = true
-                            binding.nothingFoundTextView.isVisible = false
-                            searchResultsAdapter.setItems(results)
-                        }
-
-                        binding.networkErrorLayout.isVisible = false
-                    } else {
-                        showNetworkError(code.toString())
+            tracksInteractor.searchTracks(text, object : Consumer<List<Track>> {
+                override fun consume(data: ConsumerData<List<Track>>) {
+                    val currentRunnable = updateTracksRunnable
+                    if (currentRunnable != null) {
+                        mainThreadHandler?.removeCallbacks(currentRunnable)
                     }
-                }
 
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    binding.searchProgressBar.isVisible = false
-                    showNetworkError(t.message.toString())
+                    val newpUpdateTracksRunnable = Runnable {
+                        binding.searchProgressBar.isVisible = false
+                        when (data) {
+                            is ConsumerData.Data -> {
+                                val tracks = data.value
+                                if (tracks.isEmpty()) {
+                                    binding.nothingFoundTextView.isVisible = true
+                                } else {
+                                    binding.searchResultsRecyclerView.isVisible = true
+                                    binding.nothingFoundTextView.isVisible = false
+                                    searchResultsAdapter.setItems(tracks)
+                                }
+                            }
+
+                            is ConsumerData.Error -> {
+                                showNetworkError(data.message)
+                            }
+                        }
+                    }
+                    updateTracksRunnable = newpUpdateTracksRunnable
+                    mainThreadHandler?.post(newpUpdateTracksRunnable)
                 }
             })
         }
@@ -256,7 +260,6 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_SELECTION_START = "SEARCH_SELECTION_START"
         const val SEARCH_SELECTION_END = "SEARCH_SELECTION_END"
         const val SEARCH_INPUT_ACTIVE = "SEARCH_INPUT_ACTIVE"
-        const val I_TUNES_BASE_URL = "https://itunes.apple.com"
         const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2_000L
         const val CLICK_DEBOUNCE_DELAY_MILLIS = 1_000L
     }

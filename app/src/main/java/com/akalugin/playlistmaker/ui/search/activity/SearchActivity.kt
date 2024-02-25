@@ -98,8 +98,6 @@ class SearchActivity : AppCompatActivity() {
             clearSearchHistoryButton.setOnClickListener {
                 viewModel.clearHistory()
             }
-
-            viewModel.onSearchInputChanged(searchInputEditText.text.toString())
         }
     }
 

@@ -3,7 +3,6 @@ package com.akalugin.playlistmaker.ui.player.view_model
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -22,16 +21,9 @@ class AudioPlayerViewModel(
     private val mainThreadHandler = Handler(Looper.getMainLooper())
     private val updateCurrentPositionRunnable = Runnable { updateCurrentPosition() }
 
-    private val currentPositionInMillisecondsLiveData = MutableLiveData(0)
-    private val mediatorCurrentPositionLiveData = MediatorLiveData<String>().also { liveData ->
-        if (previewUrl.isNotEmpty()) {
-            liveData.addSource(currentPositionInMillisecondsLiveData) { value ->
-                liveData.postValue(Formatter.formatMilliseconds(value))
-            }
-        }
-    }
+    private val mCurrentPositionLiveData = MutableLiveData<String>()
     val currentPositionLiveData: LiveData<String>
-        get() = mediatorCurrentPositionLiveData
+        get() = mCurrentPositionLiveData
 
     private val mPlaybackButtonEnabledLiveData = MutableLiveData(false)
     val playbackButtonEnabledLiveData: LiveData<Boolean>
@@ -54,7 +46,7 @@ class AudioPlayerViewModel(
 
                         if (state == AudioPlayerState.PREPARED) {
                             mPlaybackButtonEnabledLiveData.postValue(true)
-                            currentPositionInMillisecondsLiveData.postValue(0)
+                            setCurrentPosition(0)
                         }
                     }
                 }
@@ -79,7 +71,7 @@ class AudioPlayerViewModel(
     }
 
     private fun updateCurrentPosition() {
-        currentPositionInMillisecondsLiveData.postValue(
+        setCurrentPosition(
             audioPlayerInteractor.currentPosition + UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS
         )
         mainThreadHandler.postDelayed(
@@ -87,6 +79,13 @@ class AudioPlayerViewModel(
             UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS.toLong()
         )
     }
+
+    private fun setCurrentPosition(currentPositionInMilliseconds: Int) =
+        mCurrentPositionLiveData.postValue(
+            Formatter.formatMilliseconds(
+                currentPositionInMilliseconds
+            )
+        )
 
     private fun stopUpdateCurrentPosition() {
         mainThreadHandler.removeCallbacks(updateCurrentPositionRunnable)

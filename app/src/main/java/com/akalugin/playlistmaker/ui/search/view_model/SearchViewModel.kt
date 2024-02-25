@@ -37,8 +37,9 @@ class SearchViewModel(
         get() = mShowToast
 
     private var searchInputHasFocus: Boolean? = null
+    private var isHistoryVisible = false
 
-    private val mClearButtonVisibilityLiveData = MutableLiveData<Boolean>()
+    private val mClearButtonVisibilityLiveData = MutableLiveData(false)
     val clearButtonVisibilityLiveData: LiveData<Boolean>
         get() = mClearButtonVisibilityLiveData
 
@@ -47,7 +48,7 @@ class SearchViewModel(
             object : SearchHistoryInteractor.OnItemsChangedListener {
                 override fun onItemsChanged(tracks: List<Track>) {
                     tracksHistory = tracks
-                    renderHistory()
+                    renderHistoryIfVisible()
                 }
             }
     }
@@ -57,14 +58,18 @@ class SearchViewModel(
     }
 
     fun onSearchInputChanged(changedText: String) {
+        if (latestSearchText == changedText)
+            return
+        latestSearchText = changedText
         updateClearButtonVisibility(changedText)
+        updateHistoryVisibilityAndRender()
 
         searchDebounce(changedText)
     }
 
     fun onSearchInputFocusChanged(hasFocus: Boolean) {
         searchInputHasFocus = hasFocus
-        renderHistory()
+        updateHistoryVisibilityAndRender()
     }
 
     private fun updateClearButtonVisibility(changedText: String) {
@@ -72,17 +77,10 @@ class SearchViewModel(
     }
 
     private fun searchDebounce(changedText: String) {
-        if (latestSearchText == changedText)
-            return
-        latestSearchText = changedText
-
         mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        if (!renderHistory()) {
-            val searchRunnable = Runnable { searchTracks(changedText) }
-            val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-            mainThreadHandler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
-        }
+        val searchRunnable = Runnable { searchTracks(changedText) }
+        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
+        mainThreadHandler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
     }
 
     fun searchTracks(searchText: String) {
@@ -92,44 +90,63 @@ class SearchViewModel(
             )
 
             tracksInteractor.searchTracks(searchText, object : Consumer<List<Track>> {
-                override fun consume(data: ConsumerData<List<Track>>) = when (data) {
-                    is ConsumerData.Data -> {
-                        val tracks = data.value
-                        if (tracks.isEmpty()) {
-                            renderState(
-                                SearchState.EmptyResult
-                            )
+                override fun consume(data: ConsumerData<List<Track>>) =
+                    synchronized(HISTORY_VISIBILITY_SYNC) {
+                        if (isHistoryVisible) {
+                            renderHistory()
                         } else {
-                            renderState(
-                                SearchState.SearchResult(tracks)
-                            )
+                            when (data) {
+                                is ConsumerData.Data -> {
+                                    val tracks = data.value
+                                    if (tracks.isEmpty()) {
+                                        renderState(
+                                            SearchState.EmptyResult
+                                        )
+                                    } else {
+                                        renderState(
+                                            SearchState.SearchResult(tracks)
+                                        )
+                                    }
+                                }
+
+                                is ConsumerData.Error -> {
+                                    renderState(
+                                        SearchState.Error,
+                                    )
+                                    showToast(data.message)
+                                }
+                            }
                         }
                     }
-
-                    is ConsumerData.Error -> {
-                        renderState(
-                            SearchState.Error,
-                        )
-                        showToast(data.message)
-                    }
-                }
             })
         }
     }
 
-    private fun renderHistory() = (latestSearchText.isNullOrEmpty()
-            && searchInputHasFocus == true).also {
-        if (it) {
-            mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-            renderState(
-                if (tracksHistory.isEmpty())
-                    SearchState.Empty
-                else
-                    SearchState.History(tracksHistory)
-            )
+    private fun updateHistoryVisibilityAndRender() {
+        isHistoryVisible =
+            (latestSearchText.isNullOrEmpty() && (searchInputHasFocus == true))
+        renderHistoryIfVisible()
+    }
+
+    private fun renderHistoryIfVisible() {
+        if (isHistoryVisible) {
+            synchronized(HISTORY_VISIBILITY_SYNC) {
+                if (isHistoryVisible) {
+                    renderHistory()
+                }
+            }
         }
     }
 
+    private fun renderHistory() {
+        mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        renderState(
+            if (tracksHistory.isEmpty())
+                SearchState.Empty
+            else
+                SearchState.History(tracksHistory)
+        )
+    }
 
     private fun renderState(state: SearchState) = mStateLiveData.postValue(state)
 
@@ -146,6 +163,7 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
+        private val HISTORY_VISIBILITY_SYNC = Any()
 
         fun getVewModelFactory(
             tracksInteractor: TracksInteractor,

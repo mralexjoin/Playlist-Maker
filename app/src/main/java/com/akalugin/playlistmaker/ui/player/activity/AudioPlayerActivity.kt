@@ -92,6 +92,9 @@ class AudioPlayerActivity : AppCompatActivity() {
             if (track.previewUrl.isEmpty()) {
                 currentPositionTextView.text = getString(R.string.no_preview_message)
             }
+            else {
+                currentPositionTextView.text = getString(R.string.preview_is_loading_message)
+            }
         }
     }
 

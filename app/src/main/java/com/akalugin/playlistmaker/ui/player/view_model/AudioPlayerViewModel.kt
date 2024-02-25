@@ -30,41 +30,33 @@ class AudioPlayerViewModel(
     val audioPlayerScreenStateLiveData: LiveData<AudioPlayerScreenState>
         get() = mAudioPlayerScreenStateLiveData
 
-    private val currentPositon
+    private val currentPosition
         get() = Formatter.formatMilliseconds(
-            audioPlayerInteractor.currentPosition + UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS
+            audioPlayerInteractor.currentPosition,
         )
 
     init {
         with(audioPlayerInteractor) {
             onStateChangedListener = object : AudioPlayerInteractor.OnStateChangedListener {
-                override fun onStateChanged(state: AudioPlayerState) = when (state) {
-                    AudioPlayerState.DEFAULT -> {
-                        mAudioPlayerScreenStateLiveData.postValue(
-                            AudioPlayerScreenState.Loading,
-                        )
-                    }
-
-                    AudioPlayerState.PREPARED -> {
-                        mAudioPlayerScreenStateLiveData.postValue(
-                            AudioPlayerScreenState.Paused(
-                                Formatter.formatMilliseconds(0),
+                override fun onStateChanged(state: AudioPlayerState) {
+                    when (state) {
+                        AudioPlayerState.DEFAULT -> {
+                            mAudioPlayerScreenStateLiveData.postValue(
+                                AudioPlayerScreenState.Loading,
                             )
-                        )
-                        stopUpdateCurrentPosition()
-                    }
+                        }
 
-                    AudioPlayerState.PAUSED -> {
-                        mAudioPlayerScreenStateLiveData.postValue(
-                            AudioPlayerScreenState.Paused(
-                                currentPositon,
-                            )
-                        )
-                        stopUpdateCurrentPosition()
-                    }
+                        AudioPlayerState.PREPARED -> {
+                            stopUpdateCurrentPosition()
+                        }
 
-                    AudioPlayerState.PLAYING -> {
-                        updateCurrentPosition()
+                        AudioPlayerState.PAUSED -> {
+                            stopUpdateCurrentPosition()
+                        }
+
+                        AudioPlayerState.PLAYING -> {
+                            updateCurrentPosition()
+                        }
                     }
                 }
             }
@@ -90,21 +82,26 @@ class AudioPlayerViewModel(
     private fun updateCurrentPosition() {
         mAudioPlayerScreenStateLiveData.postValue(
             AudioPlayerScreenState.Playing(
-                currentPositon,
+                currentPosition,
             )
         )
         mainThreadHandler.postDelayed(
             updateCurrentPositionRunnable,
-            UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS.toLong()
+            UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS
         )
     }
 
     private fun stopUpdateCurrentPosition() {
+        mAudioPlayerScreenStateLiveData.postValue(
+            AudioPlayerScreenState.Paused(
+                currentPosition,
+            )
+        )
         mainThreadHandler.removeCallbacks(updateCurrentPositionRunnable)
     }
 
     companion object {
-        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300
+        private const val UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS = 300L
         fun getViewModelFactory(
             trackUrl: String,
             audioPlayerInteractor: AudioPlayerInteractor,

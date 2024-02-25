@@ -14,7 +14,7 @@ class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : AudioPla
     override var onStateChangedListener: AudioPlayerRepository.OnStateChangedListener? = null
 
     override val currentPosition: Int
-        get() = mediaPlayer.currentPosition
+        get() = mediaPlayer.currentPosition + POSITION_FIX
 
     override fun prepare(dataSource: String) {
         mediaPlayer.setDataSource(dataSource)
@@ -23,6 +23,7 @@ class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : AudioPla
             state = AudioPlayerState.PREPARED
         }
         mediaPlayer.setOnCompletionListener {
+            mediaPlayer.seekTo(0)
             state = AudioPlayerState.PREPARED
         }
     }
@@ -49,4 +50,7 @@ class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : AudioPla
         state = AudioPlayerState.PLAYING
     }
 
+    private companion object {
+        const val POSITION_FIX = 500
+    }
 }

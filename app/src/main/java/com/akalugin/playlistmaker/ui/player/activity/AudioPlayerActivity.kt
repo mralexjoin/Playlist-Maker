@@ -8,6 +8,7 @@ import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.creator.Creator
 import com.akalugin.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.ui.player.models.AudioPlayerScreenState
 import com.akalugin.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.akalugin.playlistmaker.ui.utils.Utils.dpToPx
 import com.akalugin.playlistmaker.ui.utils.Utils.serializable
@@ -24,6 +25,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         val track = intent.serializable<Track>(TRACK_KEY_EXTRA)!!
         initTrackFields(track)
         viewModel = ViewModelProvider(
@@ -32,26 +34,11 @@ class AudioPlayerActivity : AppCompatActivity() {
                 track.previewUrl,
                 Creator.provideAudioPlayerInteractor(),
             )
-        )[AudioPlayerViewModel::class.java]
-
-        with(viewModel) {
-            currentPositionLiveData.observe(this@AudioPlayerActivity) {
-                binding.currentPositionTextView.text = it ?: getString(R.string.no_preview_message)
+        )[AudioPlayerViewModel::class.java].apply {
+            binding.playButton.setOnClickListener {
+                playbackControl()
             }
-
-            with(binding.playButton) {
-                setOnClickListener {
-                    playbackControl()
-                }
-
-                playbackButtonEnabledLiveData.observe(this@AudioPlayerActivity) {
-                    isEnabled = it
-                }
-
-                playbackButtonDrawableLiveData.observe(this@AudioPlayerActivity) {
-                    setImageResource(it)
-                }
-            }
+            audioPlayerScreenStateLiveData.observe(this@AudioPlayerActivity, ::render)
         }
     }
 
@@ -88,12 +75,31 @@ class AudioPlayerActivity : AppCompatActivity() {
             yearTextView.text = track.releaseYear
             genreTextView.text = track.primaryGenreName
             countryTextView.text = track.country
+        }
+    }
 
-            if (track.previewUrl.isEmpty()) {
+    private fun render(state: AudioPlayerScreenState) = with(binding) {
+        when (state) {
+            is AudioPlayerScreenState.NoPreviewAvailable -> {
+                playButton.isEnabled = false
                 currentPositionTextView.text = getString(R.string.no_preview_message)
             }
-            else {
+
+            is AudioPlayerScreenState.Loading -> {
+                playButton.isEnabled = false
                 currentPositionTextView.text = getString(R.string.preview_is_loading_message)
+            }
+
+            is AudioPlayerScreenState.Playing -> {
+                playButton.isEnabled = true
+                playButton.setImageResource(R.drawable.pause)
+                currentPositionTextView.text = state.currentPosition
+            }
+
+            is AudioPlayerScreenState.Paused -> {
+                playButton.isEnabled = true
+                playButton.setImageResource(R.drawable.play)
+                currentPositionTextView.text = state.currentPosition
             }
         }
     }

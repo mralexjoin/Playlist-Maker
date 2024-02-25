@@ -1,7 +1,7 @@
 package com.akalugin.playlistmaker.ui.search.track
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.akalugin.playlistmaker.domain.search.models.Track
 
@@ -22,22 +22,10 @@ class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setItems(newTracks: List<Track>) {
-        val oldTracks = tracks
-        val diffUtil = object : DiffUtil.Callback() {
-            override fun getOldListSize() = oldTracks.size
-
-            override fun getNewListSize() = newTracks.size
-
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                oldTracks[oldItemPosition].trackId == newTracks[newItemPosition].trackId
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                oldTracks[oldItemPosition] == newTracks[newItemPosition]
-        }
-        val diffResult = DiffUtil.calculateDiff(diffUtil)
         tracks = newTracks
-        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     fun interface OnClickListener {

@@ -85,6 +85,7 @@ class SearchViewModel(
     }
 
     fun searchTracks(searchText: String) {
+        mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
         if (searchText.isNotEmpty()) {
             renderState(
                 SearchState.Loading,
@@ -101,11 +102,11 @@ class SearchViewModel(
                                     val tracks = data.value
                                     if (tracks.isEmpty()) {
                                         renderState(
-                                            SearchState.EmptyResult
+                                            SearchState.EmptyResult,
                                         )
                                     } else {
                                         renderState(
-                                            SearchState.SearchResult(tracks)
+                                            SearchState.SearchResult(tracks),
                                         )
                                     }
                                 }

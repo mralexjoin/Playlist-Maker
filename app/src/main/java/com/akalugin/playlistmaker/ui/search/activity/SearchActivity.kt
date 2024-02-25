@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -63,6 +64,17 @@ class SearchActivity : AppCompatActivity() {
                 this@SearchActivity,
                 ::showToast
             )
+
+            searchInputEditText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    viewModel.searchTracks(searchInputEditText.text.toString())
+                    inputMethodManager?.hideSoftInputFromWindow(searchInputEditText.windowToken, 0)
+                    true
+                }
+                else {
+                    false
+                }
+            }
 
             searchInputEditText.doOnTextChanged { text, _, _, _ ->
                 viewModel.onSearchInputChanged(text.toString())
@@ -130,7 +142,9 @@ class SearchActivity : AppCompatActivity() {
             with(binding.searchInputEditText) {
                 setText(state.text)
                 setSelection(state.selectionStart, state.selectionEnd)
-                inputMethodManager?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                if (state.isInputActive) {
+                    inputMethodManager?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+                }
             }
         }
     }

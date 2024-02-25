@@ -37,7 +37,8 @@ class SearchViewModel(
         get() = mShowToast
 
     private var searchInputHasFocus: Boolean? = null
-    private var isHistoryVisible = false
+    private val isHistoryVisible
+        get() = (latestSearchText.isNullOrEmpty() && (searchInputHasFocus == true))
 
     private val mClearButtonVisibilityLiveData = MutableLiveData(false)
     val clearButtonVisibilityLiveData: LiveData<Boolean>
@@ -62,14 +63,14 @@ class SearchViewModel(
             return
         latestSearchText = changedText
         updateClearButtonVisibility(changedText)
-        updateHistoryVisibilityAndRender()
+        renderHistoryIfVisible()
 
         searchDebounce(changedText)
     }
 
     fun onSearchInputFocusChanged(hasFocus: Boolean) {
         searchInputHasFocus = hasFocus
-        updateHistoryVisibilityAndRender()
+        renderHistoryIfVisible()
     }
 
     private fun updateClearButtonVisibility(changedText: String) {
@@ -90,8 +91,8 @@ class SearchViewModel(
             )
 
             tracksInteractor.searchTracks(searchText, object : Consumer<List<Track>> {
-                override fun consume(data: ConsumerData<List<Track>>) =
-                    synchronized(HISTORY_VISIBILITY_SYNC) {
+                override fun consume(data: ConsumerData<List<Track>>) {
+                    mainThreadHandler.post {
                         if (isHistoryVisible) {
                             renderHistory()
                         } else {
@@ -118,23 +119,14 @@ class SearchViewModel(
                             }
                         }
                     }
+                }
             })
         }
     }
 
-    private fun updateHistoryVisibilityAndRender() {
-        isHistoryVisible =
-            (latestSearchText.isNullOrEmpty() && (searchInputHasFocus == true))
-        renderHistoryIfVisible()
-    }
-
     private fun renderHistoryIfVisible() {
         if (isHistoryVisible) {
-            synchronized(HISTORY_VISIBILITY_SYNC) {
-                if (isHistoryVisible) {
-                    renderHistory()
-                }
-            }
+            renderHistory()
         }
     }
 
@@ -163,7 +155,6 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        private val HISTORY_VISIBILITY_SYNC = Any()
 
         fun getVewModelFactory(
             tracksInteractor: TracksInteractor,

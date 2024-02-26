@@ -1,15 +1,15 @@
 package com.akalugin.playlistmaker.data.settings.impl
 
-import android.app.Application
-import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.akalugin.playlistmaker.App
-import com.akalugin.playlistmaker.data.Constants
 import com.akalugin.playlistmaker.domain.settings.SettingsRepository
 
-class SettingsRepositoryImpl(context: Context) : SettingsRepository {
-    private val app = context as App
+class SettingsRepositoryImpl(
+    private val app: App,
+    private val sharedPreferences: SharedPreferences,
+) : SettingsRepository {
 
     override var darkTheme: Boolean = getTheme()
         set(value) {
@@ -18,17 +18,13 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         }
 
     private fun getTheme() =
-        app.getSharedPreferences(Constants.PLAYLIST_MAKER_PREFERENCES, Application.MODE_PRIVATE)
-            .let {
-                if (it.contains(KEY_DARK_THEME))
-                    it.getBoolean(KEY_DARK_THEME, false)
-                else {
-                    when (app.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                        Configuration.UI_MODE_NIGHT_YES -> true
-                        else -> false
-                    }
-                }
-            }
+        if (sharedPreferences.contains(KEY_DARK_THEME)) {
+            sharedPreferences.getBoolean(KEY_DARK_THEME, false)
+        } else {
+            val uiModeNight =
+                app.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)
+            uiModeNight == Configuration.UI_MODE_NIGHT_YES
+        }
 
     override fun applyTheme() {
         switchTheme(darkTheme)
@@ -43,7 +39,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
             }
         )
 
-        app.getSharedPreferences(Constants.PLAYLIST_MAKER_PREFERENCES, Application.MODE_PRIVATE)
+        sharedPreferences
             .edit()
             .putBoolean(KEY_DARK_THEME, darkTheme)
             .apply()

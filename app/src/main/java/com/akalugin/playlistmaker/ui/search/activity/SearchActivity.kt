@@ -11,9 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.akalugin.playlistmaker.creator.Creator
 import com.akalugin.playlistmaker.databinding.ActivitySearchBinding
 import com.akalugin.playlistmaker.domain.search.models.Track
 import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
@@ -21,11 +19,12 @@ import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
 import com.akalugin.playlistmaker.ui.utils.Utils.serializable
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
@@ -45,51 +44,13 @@ class SearchActivity : AppCompatActivity() {
 
         inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getVewModelFactory(
-                Creator.provideTracksInteractor(),
-                Creator.provideSearchHistoryInteractor(applicationContext),
-            )
-        )[SearchViewModel::class.java]
-
         with(binding) {
-
-            viewModel.stateLiveData.observe(this@SearchActivity, ::render)
-            viewModel.clearButtonVisibilityLiveData.observe(
-                this@SearchActivity,
-                ::updateClearButtonVisibility
-            )
-            viewModel.showToast.observe(
-                this@SearchActivity,
-                ::showToast
-            )
-
-            searchInputEditText.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    viewModel.searchTracks(searchInputEditText.text.toString())
-                    inputMethodManager?.hideSoftInputFromWindow(searchInputEditText.windowToken, 0)
-                    true
-                }
-                else {
-                    false
-                }
-            }
-
-            searchInputEditText.doOnTextChanged { text, _, _, _ ->
-                viewModel.onSearchInputChanged(text.toString())
-            }
-
             clearSearchButton.setOnClickListener {
                 searchInputEditText.apply {
                     text.clear()
 
                     inputMethodManager?.hideSoftInputFromWindow(windowToken, 0)
                 }
-            }
-
-            searchInputEditText.setOnFocusChangeListener { _, hasFocus ->
-                viewModel.onSearchInputFocusChanged(hasFocus)
             }
 
             searchResultsRecyclerView.apply {
@@ -101,14 +62,48 @@ class SearchActivity : AppCompatActivity() {
                 adapter = trackAdapter
             }
 
-            updateSearchResultsButton.setOnClickListener {
-                if (clickDebounce()) {
-                    viewModel.searchTracks(searchInputEditText.text.toString())
-                }
-            }
+            with(viewModel) {
 
-            clearSearchHistoryButton.setOnClickListener {
-                viewModel.clearHistory()
+                stateLiveData.observe(this@SearchActivity, ::render)
+                clearButtonVisibilityLiveData.observe(
+                    this@SearchActivity,
+                    ::updateClearButtonVisibility
+                )
+                showToast.observe(
+                    this@SearchActivity,
+                    ::showToast
+                )
+
+                searchInputEditText.setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        searchTracks(searchInputEditText.text.toString())
+                        inputMethodManager?.hideSoftInputFromWindow(
+                            searchInputEditText.windowToken,
+                            0
+                        )
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                searchInputEditText.doOnTextChanged { text, _, _, _ ->
+                    onSearchInputChanged(text.toString())
+                }
+
+                searchInputEditText.setOnFocusChangeListener { _, hasFocus ->
+                    onSearchInputFocusChanged(hasFocus)
+                }
+
+                updateSearchResultsButton.setOnClickListener {
+                    if (clickDebounce()) {
+                        searchTracks(searchInputEditText.toString())
+                    }
+                }
+
+                clearSearchHistoryButton.setOnClickListener {
+                    clearHistory()
+                }
             }
         }
     }

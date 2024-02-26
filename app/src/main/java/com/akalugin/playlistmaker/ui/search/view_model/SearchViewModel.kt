@@ -6,9 +6,6 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.akalugin.playlistmaker.domain.search.consumer.Consumer
 import com.akalugin.playlistmaker.domain.search.consumer.ConsumerData
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryInteractor
@@ -94,9 +91,7 @@ class SearchViewModel(
             tracksInteractor.searchTracks(searchText, object : Consumer<List<Track>> {
                 override fun consume(data: ConsumerData<List<Track>>) {
                     mainThreadHandler.post {
-                        if (isHistoryVisible) {
-                            renderHistory()
-                        } else {
+                        if (!isHistoryVisible) {
                             when (data) {
                                 is ConsumerData.Data -> {
                                     val tracks = data.value
@@ -156,17 +151,5 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getVewModelFactory(
-            tracksInteractor: TracksInteractor,
-            searchHistoryInteractor: SearchHistoryInteractor,
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    tracksInteractor,
-                    searchHistoryInteractor,
-                )
-            }
-        }
     }
 }

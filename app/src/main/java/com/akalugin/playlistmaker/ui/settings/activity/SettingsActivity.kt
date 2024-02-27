@@ -2,14 +2,13 @@ package com.akalugin.playlistmaker.ui.settings.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.akalugin.playlistmaker.creator.Creator
 import com.akalugin.playlistmaker.databinding.ActivitySettingsBinding
 import com.akalugin.playlistmaker.ui.settings.view_model.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,34 +16,29 @@ class SettingsActivity : AppCompatActivity() {
         val binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this, SettingsViewModel.getViewModelFactory(
-                Creator.provideSharingInteractor(applicationContext),
-                Creator.provideSettingsInteractor(applicationContext),
-            )
-        )[SettingsViewModel::class.java]
-
         with(binding) {
             toolbar.setNavigationOnClickListener { finish() }
 
-            shareTextView.setOnClickListener {
-                viewModel.shareApp()
-            }
+            with (viewModel) {
+                shareTextView.setOnClickListener {
+                    shareApp()
+                }
 
-            supportTextView.setOnClickListener {
-                viewModel.openSupport()
-            }
+                supportTextView.setOnClickListener {
+                    openSupport()
+                }
 
-            userAgreementTextView.setOnClickListener {
-                viewModel.openTerms()
-            }
+                userAgreementTextView.setOnClickListener {
+                    openTerms()
+                }
 
-            viewModel.nightThemeActiveLiveData.observe(this@SettingsActivity) { isChecked ->
-                nightThemeSwitch.isChecked = isChecked
-            }
+                nightThemeActiveLiveData.observe(this@SettingsActivity) { isChecked ->
+                    nightThemeSwitch.isChecked = isChecked
+                }
 
-            nightThemeSwitch.setOnClickListener {
-                viewModel.switchTheme()
+                nightThemeSwitch.setOnClickListener {
+                    switchTheme()
+                }
             }
         }
     }

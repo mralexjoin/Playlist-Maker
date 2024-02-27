@@ -1,16 +1,15 @@
 package com.akalugin.playlistmaker.data.search.impl
 
-import android.content.Context
-import com.akalugin.playlistmaker.data.Constants.PLAYLIST_MAKER_PREFERENCES
+import android.content.SharedPreferences
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryRepository
 import com.akalugin.playlistmaker.domain.search.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistoryRepositoryImpl(context: Context) : SearchHistoryRepository {
-    private val sharedPreferences =
-        context.getSharedPreferences(PLAYLIST_MAKER_PREFERENCES, Context.MODE_PRIVATE)
-    private val gson = Gson()
+class SearchHistoryRepositoryImpl(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson,
+) : SearchHistoryRepository {
     private val listOfTracksType = object : TypeToken<List<Track>>() {}.type
 
     override var onItemsChangedListener: SearchHistoryRepository.OnItemsChangedListener? = null

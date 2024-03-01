@@ -9,13 +9,11 @@ import com.akalugin.playlistmaker.domain.settings.SettingsInteractor
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.koin.fileProperties
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            fileProperties()
             androidContext(this@App)
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
         }

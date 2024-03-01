@@ -15,6 +15,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "ITUNES_URL", "\"https://itunes.apple.com\"")
+        buildConfigField("String", "PREFERENCES_NAME", "\"playlist_maker_preferences\"")
     }
 
     buildTypes {
@@ -35,6 +37,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }

@@ -28,6 +28,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbar.setNavigationOnClickListener { finish() }
 
         val track = intent.serializable<Track>(TRACK_KEY_EXTRA)!!
         previewUrl = track.previewUrl

@@ -98,7 +98,7 @@
                 style="@style/SearchActivityButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_activity_button_margin_top"
+                android:layout_marginTop="@dimen/button_margin_top"
                 android:text="@string/update" />
         </LinearLayout>
 
@@ -132,7 +132,7 @@
                 style="@style/SearchActivityButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/search_activity_button_margin_top"
+                android:layout_marginTop="@dimen/button_margin_top"
                 android:layout_marginBottom="24dp"
                 android:text="@string/clear_search_history" />
 

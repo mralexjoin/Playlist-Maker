@@ -1,5 +1,7 @@
 package com.akalugin.playlistmaker.di
 
+import com.akalugin.playlistmaker.ui.library.favorites.FavoritesViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.PlaylistsViewModel
 import com.akalugin.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
 import com.akalugin.playlistmaker.ui.settings.view_model.SettingsViewModel
@@ -15,4 +17,7 @@ val viewModelModule = module {
     viewModelOf(::SearchViewModel)
 
     viewModelOf(::SettingsViewModel)
+
+    viewModelOf(::FavoritesViewModel)
+    viewModelOf(::PlaylistsViewModel)
 }

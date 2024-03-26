@@ -1,6 +1,7 @@
 package com.akalugin.playlistmaker.di
 
 import android.content.Context
+import com.akalugin.playlistmaker.BuildConfig
 import com.akalugin.playlistmaker.data.search.network.NetworkClient
 import com.akalugin.playlistmaker.data.search.network.impl.ITunesApiService
 import com.akalugin.playlistmaker.data.search.network.impl.RetrofitNetworkClient
@@ -15,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
     single<ITunesApiService> {
-        Retrofit.Builder().baseUrl(getProperty<String>("itunes_url"))
+        Retrofit.Builder().baseUrl(BuildConfig.ITUNES_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ITunesApiService::class.java)
@@ -23,7 +24,7 @@ val dataModule = module {
 
     single {
         androidContext().getSharedPreferences(
-            getProperty("preferences_name"),
+            BuildConfig.PREFERENCES_NAME,
             Context.MODE_PRIVATE
         )
     }

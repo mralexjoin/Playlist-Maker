@@ -70,7 +70,7 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="SearchErrorTextView" parent="HeaderTextView">
+    <style name="ErrorTextView" parent="HeaderTextView">
         <item name="android:layout_marginHorizontal">24dp</item>
         <item name="android:drawablePadding">16dp</item>
     </style>
@@ -101,6 +101,11 @@
     </style>
     <style name="TrackInfoHeaderFieldTextView" parent="TrackInfoFieldTextView">
         <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="TabLayout" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
 </resources>

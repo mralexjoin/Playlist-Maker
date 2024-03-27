@@ -9,6 +9,7 @@
         android:id="@+id/toolbar"
         style="@style/Toolbar"
         android:contentDescription="@string/search_toolbar_description"
+        app:title="@string/media_player"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

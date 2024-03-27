@@ -36,4 +36,6 @@
     <string name="no_playlists_message">Вы не создали\n ни одного плейлиста</string>
     <string name="playlists">Плейлисты</string>
     <string name="favorites_tracks">Избранные треки</string>
+    <string name="media_player">Медиаплейер</string>
+    <string name="page_header">Заголовок</string>
 </resources>

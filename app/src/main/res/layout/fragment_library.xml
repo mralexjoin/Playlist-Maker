@@ -6,14 +6,6 @@
     android:background="?attr/colorSecondary"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/Toolbar"
-        android:layout_marginBottom="@dimen/toolbar_margin_bottom"
-        app:navigationIcon="@drawable/arrow_back"
-        app:title="@string/library"
-        app:titleTextColor="?attr/colorOnSecondary" />
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"

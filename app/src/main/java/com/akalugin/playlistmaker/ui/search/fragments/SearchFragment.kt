@@ -1,29 +1,33 @@
-package com.akalugin.playlistmaker.ui.search.activity
+package com.akalugin.playlistmaker.ui.search.fragments
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.akalugin.playlistmaker.databinding.ActivitySearchBinding
+import com.akalugin.playlistmaker.databinding.FragmentSearchBinding
 import com.akalugin.playlistmaker.domain.search.models.Track
 import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
-import com.akalugin.playlistmaker.ui.utils.Utils.serializable
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.Serializable
 
-class SearchActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySearchBinding
+class SearchFragment : Fragment() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding: FragmentSearchBinding
+        get() = _binding!!
+
     private val viewModel: SearchViewModel by viewModel()
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
@@ -33,16 +37,20 @@ class SearchActivity : AppCompatActivity() {
     private val trackAdapter = TrackAdapter()
 
     private var isClickAllowed = true
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        binding.toolbar.setNavigationOnClickListener { finish() }
-
-        inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
         with(binding) {
             clearSearchButton.setOnClickListener {
@@ -53,24 +61,25 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
 
+            val context = this@SearchFragment.requireContext()
             searchResultsRecyclerView.apply {
-                layoutManager = LinearLayoutManager(this@SearchActivity)
+                layoutManager = LinearLayoutManager(context)
                 adapter = trackAdapter
             }
             searchHistoryRecyclerView.apply {
-                layoutManager = LinearLayoutManager(this@SearchActivity)
+                layoutManager = LinearLayoutManager(context)
                 adapter = trackAdapter
             }
 
+            val owner = this@SearchFragment.viewLifecycleOwner
             with(viewModel) {
-
-                stateLiveData.observe(this@SearchActivity, ::render)
+                stateLiveData.observe(owner, ::render)
                 clearButtonVisibilityLiveData.observe(
-                    this@SearchActivity,
+                    owner,
                     ::updateClearButtonVisibility
                 )
                 showToast.observe(
-                    this@SearchActivity,
+                    owner,
                     ::showToast
                 )
 
@@ -108,48 +117,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         viewModel.onDestroy()
+        _binding = null
     }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        with(binding.searchInputEditText) {
-            outState.putSerializable(
-                INPUT_STATE_KEY,
-                InputInstanceState(
-                    text.toString(),
-                    selectionStart,
-                    selectionEnd,
-                    inputMethodManager?.isActive(this) ?: false,
-                )
-            )
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        savedInstanceState.serializable<InputInstanceState>(INPUT_STATE_KEY)?.let { state ->
-            with(binding.searchInputEditText) {
-                setText(state.text)
-                setSelection(state.selectionStart, state.selectionEnd)
-                if (state.isInputActive) {
-                    inputMethodManager?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-                }
-            }
-        }
-    }
-
-    data class InputInstanceState(
-        val text: String,
-        val selectionStart: Int,
-        val selectionEnd: Int,
-        val isInputActive: Boolean,
-    ) : Serializable
 
     private fun updateClearButtonVisibility(isVisible: Boolean) {
         binding.clearSearchButton.isVisible = isVisible
@@ -201,11 +173,11 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireActivity().applicationContext, message, Toast.LENGTH_LONG).show()
     }
 
     private fun playTrack(track: Track) {
-        val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+        val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
             putExtra(AudioPlayerActivity.TRACK_KEY_EXTRA, track)
         }
         startActivity(intent)
@@ -219,7 +191,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private companion object {
-        private const val INPUT_STATE_KEY = "INPUT_STATE"
         const val CLICK_DEBOUNCE_DELAY_MILLIS = 1_000L
     }
 }

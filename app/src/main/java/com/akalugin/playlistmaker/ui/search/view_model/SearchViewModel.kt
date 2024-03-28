@@ -34,8 +34,6 @@ class SearchViewModel(
         get() = mShowToast
 
     private var searchInputHasFocus: Boolean? = null
-    private val isHistoryVisible
-        get() = (latestSearchText.isNullOrEmpty() && (searchInputHasFocus == true))
 
     private val mClearButtonVisibilityLiveData = MutableLiveData(false)
     val clearButtonVisibilityLiveData: LiveData<Boolean>
@@ -46,7 +44,7 @@ class SearchViewModel(
             object : SearchHistoryInteractor.OnItemsChangedListener {
                 override fun onItemsChanged(tracks: List<Track>) {
                     tracksHistory = tracks
-                    renderHistoryIfVisible()
+                    renderHistoryIfVisibleOrRun(null)
                 }
             }
     }
@@ -60,14 +58,15 @@ class SearchViewModel(
             return
         latestSearchText = changedText
         updateClearButtonVisibility(changedText)
-        renderHistoryIfVisible()
 
-        searchDebounce(changedText)
+        renderHistoryIfVisibleOrRun {
+            searchDebounce(changedText)
+        }
     }
 
     fun onSearchInputFocusChanged(hasFocus: Boolean) {
         searchInputHasFocus = hasFocus
-        renderHistoryIfVisible()
+        renderHistoryIfVisibleOrRun(null)
     }
 
     private fun updateClearButtonVisibility(changedText: String) {
@@ -91,7 +90,7 @@ class SearchViewModel(
             tracksInteractor.searchTracks(searchText, object : Consumer<List<Track>> {
                 override fun consume(data: ConsumerData<List<Track>>) {
                     mainThreadHandler.post {
-                        if (!isHistoryVisible) {
+                        renderHistoryIfVisibleOrRun {
                             when (data) {
                                 is ConsumerData.Data -> {
                                     val tracks = data.value
@@ -120,20 +119,19 @@ class SearchViewModel(
         }
     }
 
-    private fun renderHistoryIfVisible() {
-        if (isHistoryVisible) {
-            renderHistory()
+    private fun renderHistoryIfVisibleOrRun(fallbackRunner: (() -> Unit)?) {
+        if (latestSearchText.isNullOrEmpty()) {
+            mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+            renderState(
+                if (searchInputHasFocus == true && tracksHistory.isNotEmpty()) {
+                    SearchState.History(tracksHistory)
+                } else {
+                    SearchState.Empty
+                }
+            )
+        } else {
+            fallbackRunner?.invoke()
         }
-    }
-
-    private fun renderHistory() {
-        mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        renderState(
-            if (tracksHistory.isEmpty())
-                SearchState.Empty
-            else
-                SearchState.History(tracksHistory)
-        )
     }
 
     private fun renderState(state: SearchState) = mStateLiveData.postValue(state)

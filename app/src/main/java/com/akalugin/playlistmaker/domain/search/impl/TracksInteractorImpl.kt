@@ -1,16 +1,12 @@
 package com.akalugin.playlistmaker.domain.search.impl
 
-import com.akalugin.playlistmaker.domain.search.consumer.Consumer
 import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.search.util.TracksData
 import com.akalugin.playlistmaker.domain.search.tracks.TracksInteractor
 import com.akalugin.playlistmaker.domain.search.tracks.TracksRepository
-import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.Flow
 
 class TracksInteractorImpl(private val tracksRepository: TracksRepository) : TracksInteractor {
-    private val executor = Executors.newCachedThreadPool()
-
-    override fun searchTracks(expression: String, consumer: Consumer<List<Track>>) =
-        executor.execute {
-            consumer.consume(tracksRepository.searchTracks(expression))
-        }
+    override fun searchTracks(expression: String): Flow<TracksData<List<Track>>> =
+        tracksRepository.searchTracks(expression)
 }

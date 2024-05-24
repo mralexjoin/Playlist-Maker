@@ -1,56 +1,50 @@
 package com.akalugin.playlistmaker.ui.search.view_model
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.akalugin.playlistmaker.domain.search.consumer.Consumer
-import com.akalugin.playlistmaker.domain.search.consumer.ConsumerData
+import androidx.lifecycle.viewModelScope
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryInteractor
 import com.akalugin.playlistmaker.domain.search.models.Track
 import com.akalugin.playlistmaker.domain.search.tracks.TracksInteractor
+import com.akalugin.playlistmaker.domain.search.util.TracksData
 import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.utils.SingleLiveEvent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
     private val searchHistoryInteractor: SearchHistoryInteractor,
 ) : ViewModel() {
 
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
-
     private var latestSearchText: String? = null
 
     private var tracksHistory: List<Track> = emptyList()
 
-    private val mStateLiveData = MutableLiveData<SearchState>()
+    private val _stateLiveData = MutableLiveData<SearchState>()
     val stateLiveData: LiveData<SearchState>
-        get() = mStateLiveData
+        get() = _stateLiveData
 
-    private val mShowToast = SingleLiveEvent<String>()
+    private val _showToast = SingleLiveEvent<String>()
     val showToast: LiveData<String>
-        get() = mShowToast
+        get() = _showToast
 
     private var searchInputHasFocus: Boolean? = null
 
-    private val mClearButtonVisibilityLiveData = MutableLiveData(false)
+    private val _clearButtonVisibilityLiveData = MutableLiveData(false)
     val clearButtonVisibilityLiveData: LiveData<Boolean>
-        get() = mClearButtonVisibilityLiveData
+        get() = _clearButtonVisibilityLiveData
+
+    private var searchJob: Job? = null
 
     init {
         searchHistoryInteractor.onItemsChangedListener =
-            object : SearchHistoryInteractor.OnItemsChangedListener {
-                override fun onItemsChanged(tracks: List<Track>) {
-                    tracksHistory = tracks
-                    renderHistoryIfVisibleOrRun(null)
-                }
+            SearchHistoryInteractor.OnItemsChangedListener { tracks ->
+                tracksHistory = tracks
+                renderHistoryIfVisibleOrRun(null)
             }
-    }
-
-    fun onDestroy() {
-        mainThreadHandler.removeCallbacksAndMessages(null)
     }
 
     fun onSearchInputChanged(changedText: String) {
@@ -60,7 +54,11 @@ class SearchViewModel(
         updateClearButtonVisibility(changedText)
 
         renderHistoryIfVisibleOrRun {
-            searchDebounce(changedText)
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                searchTracks(changedText)
+            }
         }
     }
 
@@ -70,58 +68,49 @@ class SearchViewModel(
     }
 
     private fun updateClearButtonVisibility(changedText: String) {
-        mClearButtonVisibilityLiveData.value = changedText.isNotEmpty()
-    }
-
-    private fun searchDebounce(changedText: String) {
-        mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { searchTracks(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        mainThreadHandler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
+        _clearButtonVisibilityLiveData.value = changedText.isNotEmpty()
     }
 
     fun searchTracks(searchText: String) {
-        mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        if (searchText.isNotEmpty()) {
-            renderState(
-                SearchState.Loading,
-            )
+        searchJob?.cancel()
+        if (searchText.isEmpty()) {
+            return
+        }
+        renderState(
+            SearchState.Loading,
+        )
 
-            tracksInteractor.searchTracks(searchText, object : Consumer<List<Track>> {
-                override fun consume(data: ConsumerData<List<Track>>) {
-                    mainThreadHandler.post {
-                        renderHistoryIfVisibleOrRun {
-                            when (data) {
-                                is ConsumerData.Data -> {
-                                    val tracks = data.value
-                                    if (tracks.isEmpty()) {
-                                        renderState(
-                                            SearchState.EmptyResult,
-                                        )
-                                    } else {
-                                        renderState(
-                                            SearchState.SearchResult(tracks),
-                                        )
-                                    }
-                                }
+        viewModelScope.launch {
+            tracksInteractor.searchTracks(searchText).collect(::processTracksData)
+        }
+    }
 
-                                is ConsumerData.Error -> {
-                                    renderState(
-                                        SearchState.Error,
-                                    )
-                                    showToast(data.message)
-                                }
-                            }
-                        }
-                    }
+    private fun processTracksData(data: TracksData<List<Track>>) = renderHistoryIfVisibleOrRun {
+        when (data) {
+            is TracksData.Data -> {
+                val tracks = data.value
+                if (tracks.isEmpty()) {
+                    renderState(
+                        SearchState.EmptyResult,
+                    )
+                } else {
+                    renderState(
+                        SearchState.SearchResult(tracks),
+                    )
                 }
-            })
+            }
+
+            is TracksData.Error -> {
+                renderState(
+                    SearchState.Error,
+                )
+                showToast(data.error.code.toString())
+            }
         }
     }
 
     private fun renderHistoryIfVisibleOrRun(fallbackRunner: (() -> Unit)?) {
         if (latestSearchText.isNullOrEmpty()) {
-            mainThreadHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
             renderState(
                 if (searchInputHasFocus == true && tracksHistory.isNotEmpty()) {
                     SearchState.History(tracksHistory)
@@ -134,11 +123,11 @@ class SearchViewModel(
         }
     }
 
-    private fun renderState(state: SearchState) = mStateLiveData.postValue(state)
+    private fun renderState(state: SearchState) = _stateLiveData.postValue(state)
 
     private fun showToast(message: String) {
         if (message.isNotEmpty()) {
-            mShowToast.postValue(message)
+            _showToast.postValue(message)
         }
     }
 
@@ -148,6 +137,5 @@ class SearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 }

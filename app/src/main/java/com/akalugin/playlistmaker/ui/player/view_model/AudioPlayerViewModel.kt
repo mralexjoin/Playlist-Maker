@@ -1,62 +1,74 @@
 package com.akalugin.playlistmaker.ui.player.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.akalugin.playlistmaker.domain.formatter.Formatter
 import com.akalugin.playlistmaker.domain.player.AudioPlayerInteractor
 import com.akalugin.playlistmaker.domain.player.models.AudioPlayerState
 import com.akalugin.playlistmaker.ui.player.models.AudioPlayerScreenState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private val previewUrl: String,
     private val audioPlayerInteractor: AudioPlayerInteractor,
 ) : ViewModel() {
 
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
-    private val updateCurrentPositionRunnable = Runnable { updateCurrentPosition() }
-
-    private val mAudioPlayerScreenStateLiveData = MutableLiveData(
+    private val _audioPlayerScreenStateLiveData = MutableLiveData(
         if (previewUrl.isEmpty())
             AudioPlayerScreenState.NoPreviewAvailable
         else
             AudioPlayerScreenState.Loading
     )
     val audioPlayerScreenStateLiveData: LiveData<AudioPlayerScreenState>
-        get() = mAudioPlayerScreenStateLiveData
-
-    private val currentPosition
-        get() = Formatter.formatMilliseconds(
-            audioPlayerInteractor.currentPosition,
-        )
+        get() = _audioPlayerScreenStateLiveData
 
     init {
         with(audioPlayerInteractor) {
             onStateChangedListener = object : AudioPlayerInteractor.OnStateChangedListener {
+                private var timerJob: Job? = null
+
                 override fun onStateChanged(state: AudioPlayerState) {
                     when (state) {
                         AudioPlayerState.DEFAULT -> {
-                            mAudioPlayerScreenStateLiveData.postValue(
-                                AudioPlayerScreenState.Loading,
+                            _audioPlayerScreenStateLiveData.postValue(
+                                AudioPlayerScreenState.Loading
                             )
                         }
 
-                        AudioPlayerState.PREPARED -> {
-                            stopUpdateCurrentPosition()
-                        }
-
-                        AudioPlayerState.PAUSED -> {
-                            stopUpdateCurrentPosition()
+                        AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
+                            timerJob?.cancel()
+                            _audioPlayerScreenStateLiveData.postValue(
+                                AudioPlayerScreenState.Paused(
+                                    currentPositionInMillis,
+                                )
+                            )
                         }
 
                         AudioPlayerState.PLAYING -> {
-                            updateCurrentPosition()
+                            timerJob = viewModelScope.launch {
+                                while (true) {
+                                    _audioPlayerScreenStateLiveData.postValue(
+                                        AudioPlayerScreenState.Playing(
+                                            currentPositionInMillis,
+                                        )
+                                    )
+                                    delay(UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
+                                }
+                            }
                         }
                     }
                 }
+
+                private val currentPositionInMillis
+                    get() = Formatter.formatMilliseconds(
+                        currentPosition,
+                    )
             }
+
             if (previewUrl.isNotEmpty()) {
                 prepare(previewUrl)
             }
@@ -73,28 +85,6 @@ class AudioPlayerViewModel(
 
     fun release() {
         audioPlayerInteractor.release()
-        mainThreadHandler.removeCallbacksAndMessages(null)
-    }
-
-    private fun updateCurrentPosition() {
-        mAudioPlayerScreenStateLiveData.postValue(
-            AudioPlayerScreenState.Playing(
-                currentPosition,
-            )
-        )
-        mainThreadHandler.postDelayed(
-            updateCurrentPositionRunnable,
-            UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS
-        )
-    }
-
-    private fun stopUpdateCurrentPosition() {
-        mAudioPlayerScreenStateLiveData.postValue(
-            AudioPlayerScreenState.Paused(
-                currentPosition,
-            )
-        )
-        mainThreadHandler.removeCallbacks(updateCurrentPositionRunnable)
     }
 
     companion object {

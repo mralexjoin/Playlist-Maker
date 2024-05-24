@@ -3,8 +3,6 @@ package com.akalugin.playlistmaker.ui.search.fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +12,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akalugin.playlistmaker.databinding.FragmentSearchBinding
 import com.akalugin.playlistmaker.domain.search.models.Track
@@ -21,6 +20,8 @@ import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -30,13 +31,12 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel()
 
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
-
     private var inputMethodManager: InputMethodManager? = null
 
     private val trackAdapter = TrackAdapter()
 
     private var isClickAllowed = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -119,7 +119,6 @@ class SearchFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.onDestroy()
         _binding = null
     }
 
@@ -186,7 +185,10 @@ class SearchFragment : Fragment() {
     private fun clickDebounce() = isClickAllowed.also {
         if (isClickAllowed) {
             isClickAllowed = false
-            mainThreadHandler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MILLIS)
+            lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
+                isClickAllowed = true
+            }
         }
     }
 

@@ -23,29 +23,27 @@ class SearchViewModel(
 
     private var tracksHistory: List<Track> = emptyList()
 
-    private val mStateLiveData = MutableLiveData<SearchState>()
+    private val _stateLiveData = MutableLiveData<SearchState>()
     val stateLiveData: LiveData<SearchState>
-        get() = mStateLiveData
+        get() = _stateLiveData
 
-    private val mShowToast = SingleLiveEvent<String>()
+    private val _showToast = SingleLiveEvent<String>()
     val showToast: LiveData<String>
-        get() = mShowToast
+        get() = _showToast
 
     private var searchInputHasFocus: Boolean? = null
 
-    private val mClearButtonVisibilityLiveData = MutableLiveData(false)
+    private val _clearButtonVisibilityLiveData = MutableLiveData(false)
     val clearButtonVisibilityLiveData: LiveData<Boolean>
-        get() = mClearButtonVisibilityLiveData
+        get() = _clearButtonVisibilityLiveData
 
     private var searchJob: Job? = null
 
     init {
         searchHistoryInteractor.onItemsChangedListener =
-            object : SearchHistoryInteractor.OnItemsChangedListener {
-                override fun onItemsChanged(tracks: List<Track>) {
-                    tracksHistory = tracks
-                    renderHistoryIfVisibleOrRun(null)
-                }
+            SearchHistoryInteractor.OnItemsChangedListener { tracks ->
+                tracksHistory = tracks
+                renderHistoryIfVisibleOrRun(null)
             }
     }
 
@@ -70,7 +68,7 @@ class SearchViewModel(
     }
 
     private fun updateClearButtonVisibility(changedText: String) {
-        mClearButtonVisibilityLiveData.value = changedText.isNotEmpty()
+        _clearButtonVisibilityLiveData.value = changedText.isNotEmpty()
     }
 
     fun searchTracks(searchText: String) {
@@ -125,11 +123,11 @@ class SearchViewModel(
         }
     }
 
-    private fun renderState(state: SearchState) = mStateLiveData.postValue(state)
+    private fun renderState(state: SearchState) = _stateLiveData.postValue(state)
 
     private fun showToast(message: String) {
         if (message.isNotEmpty()) {
-            mShowToast.postValue(message)
+            _showToast.postValue(message)
         }
     }
 

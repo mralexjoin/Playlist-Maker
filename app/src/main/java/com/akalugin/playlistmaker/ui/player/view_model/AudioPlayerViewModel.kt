@@ -17,14 +17,14 @@ class AudioPlayerViewModel(
     private val audioPlayerInteractor: AudioPlayerInteractor,
 ) : ViewModel() {
 
-    private val mAudioPlayerScreenStateLiveData = MutableLiveData(
+    private val _audioPlayerScreenStateLiveData = MutableLiveData(
         if (previewUrl.isEmpty())
             AudioPlayerScreenState.NoPreviewAvailable
         else
             AudioPlayerScreenState.Loading
     )
     val audioPlayerScreenStateLiveData: LiveData<AudioPlayerScreenState>
-        get() = mAudioPlayerScreenStateLiveData
+        get() = _audioPlayerScreenStateLiveData
 
     init {
         with(audioPlayerInteractor) {
@@ -34,14 +34,14 @@ class AudioPlayerViewModel(
                 override fun onStateChanged(state: AudioPlayerState) {
                     when (state) {
                         AudioPlayerState.DEFAULT -> {
-                            mAudioPlayerScreenStateLiveData.postValue(
+                            _audioPlayerScreenStateLiveData.postValue(
                                 AudioPlayerScreenState.Loading
                             )
                         }
 
                         AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
                             timerJob?.cancel()
-                            mAudioPlayerScreenStateLiveData.postValue(
+                            _audioPlayerScreenStateLiveData.postValue(
                                 AudioPlayerScreenState.Paused(
                                     currentPositionInMillis,
                                 )
@@ -51,7 +51,7 @@ class AudioPlayerViewModel(
                         AudioPlayerState.PLAYING -> {
                             timerJob = viewModelScope.launch {
                                 while (true) {
-                                    mAudioPlayerScreenStateLiveData.postValue(
+                                    _audioPlayerScreenStateLiveData.postValue(
                                         AudioPlayerScreenState.Playing(
                                             currentPositionInMillis,
                                         )

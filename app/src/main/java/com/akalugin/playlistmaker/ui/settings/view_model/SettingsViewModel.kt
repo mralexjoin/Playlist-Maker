@@ -11,9 +11,9 @@ class SettingsViewModel(
     private val settingsInteractor: SettingsInteractor,
 ) : ViewModel() {
 
-    private val mNightThemeActiveLiveData = MutableLiveData(settingsInteractor.darkTheme)
+    private val _nightThemeActiveLiveData = MutableLiveData(settingsInteractor.darkTheme)
     val nightThemeActiveLiveData: LiveData<Boolean>
-        get() = mNightThemeActiveLiveData
+        get() = _nightThemeActiveLiveData
 
     fun shareApp() = sharingInteractor.shareApp()
     fun openTerms() = sharingInteractor.openTerms()
@@ -22,6 +22,6 @@ class SettingsViewModel(
     fun switchTheme() {
         settingsInteractor.switchTheme()
 
-        mNightThemeActiveLiveData.value = settingsInteractor.darkTheme
+        _nightThemeActiveLiveData.value = settingsInteractor.darkTheme
     }
 }

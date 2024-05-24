@@ -9,7 +9,7 @@ interface SearchHistoryInteractor {
     fun addTrack(track: Track)
     fun clearTracks()
 
-    interface OnItemsChangedListener {
+    fun interface OnItemsChangedListener {
         fun onItemsChanged(tracks: List<Track>)
     }
 }

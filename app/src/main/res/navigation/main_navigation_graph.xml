@@ -15,7 +15,11 @@
     <fragment
         android:id="@+id/libraryFragment"
         android:name="com.akalugin.playlistmaker.ui.library.fragments.LibraryFragment"
-        android:label="LibraryFragment" />
+        android:label="LibraryFragment" >
+        <action
+            android:id="@+id/action_libraryFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.akalugin.playlistmaker.ui.settings.fragments.SettingsFragment"

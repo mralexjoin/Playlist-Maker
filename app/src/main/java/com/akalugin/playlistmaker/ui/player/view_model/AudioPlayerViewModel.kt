@@ -4,25 +4,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksInteractor
 import com.akalugin.playlistmaker.domain.formatter.Formatter
 import com.akalugin.playlistmaker.domain.player.AudioPlayerInteractor
 import com.akalugin.playlistmaker.domain.player.models.AudioPlayerState
+import com.akalugin.playlistmaker.domain.search.models.Track
 import com.akalugin.playlistmaker.ui.player.models.AudioPlayerScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
-    private val previewUrl: String,
+    private val track: Track,
     private val audioPlayerInteractor: AudioPlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
 ) : ViewModel() {
+    private var screenState =
+        AudioPlayerScreenState(
+            if (track.previewUrl.isEmpty())
+                AudioPlayerScreenState.PlayerState.NO_PREVIEW_AVAILABLE
+            else
+                AudioPlayerScreenState.PlayerState.LOADING,
+            false,
+            track.isFavorite,
+            ""
+        )
+        set(value) {
+            field = value
+            _audioPlayerScreenStateLiveData.postValue(screenState)
+        }
 
-    private val _audioPlayerScreenStateLiveData = MutableLiveData(
-        if (previewUrl.isEmpty())
-            AudioPlayerScreenState.NoPreviewAvailable
-        else
-            AudioPlayerScreenState.Loading
-    )
+    private val _audioPlayerScreenStateLiveData = MutableLiveData(screenState)
     val audioPlayerScreenStateLiveData: LiveData<AudioPlayerScreenState>
         get() = _audioPlayerScreenStateLiveData
 
@@ -34,27 +46,28 @@ class AudioPlayerViewModel(
                 override fun onStateChanged(state: AudioPlayerState) {
                     when (state) {
                         AudioPlayerState.DEFAULT -> {
-                            _audioPlayerScreenStateLiveData.postValue(
-                                AudioPlayerScreenState.Loading
+                            screenState = screenState.copy(
+                                playerState = AudioPlayerScreenState.PlayerState.LOADING,
+                                isPlaying = false,
+                                currentPosition = currentPositionInMillis,
                             )
                         }
 
                         AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
                             timerJob?.cancel()
-                            _audioPlayerScreenStateLiveData.postValue(
-                                AudioPlayerScreenState.Paused(
-                                    currentPositionInMillis,
-                                )
+                            screenState = screenState.copy(
+                                playerState = AudioPlayerScreenState.PlayerState.READY,
+                                isPlaying = false,
+                                currentPosition = currentPositionInMillis,
                             )
                         }
 
                         AudioPlayerState.PLAYING -> {
                             timerJob = viewModelScope.launch {
                                 while (true) {
-                                    _audioPlayerScreenStateLiveData.postValue(
-                                        AudioPlayerScreenState.Playing(
-                                            currentPositionInMillis,
-                                        )
+                                    screenState = screenState.copy(
+                                        isPlaying = true,
+                                        currentPosition = currentPositionInMillis
                                     )
                                     delay(UPDATE_PLAYER_ACTIVITY_DELAY_MILLIS)
                                 }
@@ -69,8 +82,8 @@ class AudioPlayerViewModel(
                     )
             }
 
-            if (previewUrl.isNotEmpty()) {
-                prepare(previewUrl)
+            if (track.previewUrl.isNotEmpty()) {
+                prepare(track.previewUrl)
             }
         }
     }
@@ -85,6 +98,18 @@ class AudioPlayerViewModel(
 
     fun release() {
         audioPlayerInteractor.release()
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            if (track.isFavorite) {
+                favoriteTracksInteractor.removeFromFavorites(track)
+            } else {
+                favoriteTracksInteractor.addToFavorites(track)
+            }
+            track.isFavorite = !track.isFavorite
+            screenState = screenState.copy(isFavorite = track.isFavorite)
+        }
     }
 
     companion object {

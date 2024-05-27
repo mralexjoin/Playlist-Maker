@@ -1,5 +1,7 @@
 package com.akalugin.playlistmaker.di
 
+import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksInteractor
+import com.akalugin.playlistmaker.domain.favorites.impl.FavoriteTracksInteractorImpl
 import com.akalugin.playlistmaker.domain.player.AudioPlayerInteractor
 import com.akalugin.playlistmaker.domain.player.impl.AudioPlayerInteractorImpl
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryInteractor
@@ -31,5 +33,9 @@ val interactorModule = module {
 
     single<TracksInteractor> {
         TracksInteractorImpl(get())
+    }
+
+    single<FavoriteTracksInteractor> {
+        FavoriteTracksInteractorImpl(get())
     }
 }

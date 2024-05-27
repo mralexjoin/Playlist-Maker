@@ -2,7 +2,7 @@ package com.akalugin.playlistmaker.ui.library.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.akalugin.playlistmaker.ui.library.favorites.FavoritesFragment
+import com.akalugin.playlistmaker.ui.library.favorites.fragments.FavoritesFragment
 import com.akalugin.playlistmaker.ui.library.playlists.PlaylistsFragment
 
 class LibraryPagerAdapter(fragment: Fragment) :

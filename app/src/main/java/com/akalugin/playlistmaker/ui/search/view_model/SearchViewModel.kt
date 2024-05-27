@@ -21,8 +21,6 @@ class SearchViewModel(
 
     private var latestSearchText: String? = null
 
-    private var tracksHistory: List<Track> = emptyList()
-
     private val _stateLiveData = MutableLiveData<SearchState>()
     val stateLiveData: LiveData<SearchState>
         get() = _stateLiveData
@@ -38,14 +36,6 @@ class SearchViewModel(
         get() = _clearButtonVisibilityLiveData
 
     private var searchJob: Job? = null
-
-    init {
-        searchHistoryInteractor.onItemsChangedListener =
-            SearchHistoryInteractor.OnItemsChangedListener { tracks ->
-                tracksHistory = tracks
-                renderHistoryIfVisibleOrRun(null)
-            }
-    }
 
     fun onSearchInputChanged(changedText: String) {
         if (latestSearchText == changedText)
@@ -111,13 +101,16 @@ class SearchViewModel(
 
     private fun renderHistoryIfVisibleOrRun(fallbackRunner: (() -> Unit)?) {
         if (latestSearchText.isNullOrEmpty()) {
-            renderState(
-                if (searchInputHasFocus == true && tracksHistory.isNotEmpty()) {
-                    SearchState.History(tracksHistory)
-                } else {
-                    SearchState.Empty
+            renderState(SearchState.Empty)
+            if (searchInputHasFocus == true) {
+                viewModelScope.launch {
+                    searchHistoryInteractor.getTracks().collect { tracks ->
+                        if (tracks.isNotEmpty()) {
+                            renderState(SearchState.History(tracks))
+                        }
+                    }
                 }
-            )
+            }
         } else {
             fallbackRunner?.invoke()
         }
@@ -131,9 +124,17 @@ class SearchViewModel(
         }
     }
 
-    fun addTrackToHistory(track: Track) = searchHistoryInteractor.addTrack(track)
+    fun addTrackToHistory(track: Track) {
+        viewModelScope.launch {
+            searchHistoryInteractor.addTrack(track)
+            renderHistoryIfVisibleOrRun(null)
+        }
+    }
 
-    fun clearHistory() = searchHistoryInteractor.clearTracks()
+    fun clearHistory() {
+        searchHistoryInteractor.clearTracks()
+        renderHistoryIfVisibleOrRun(null)
+    }
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L

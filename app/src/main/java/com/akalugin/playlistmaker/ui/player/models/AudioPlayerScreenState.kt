@@ -1,15 +1,14 @@
 package com.akalugin.playlistmaker.ui.player.models
 
-sealed interface AudioPlayerScreenState {
-    data object NoPreviewAvailable: AudioPlayerScreenState
-
-    data object Loading: AudioPlayerScreenState
-
-    data class Playing(
-        val currentPosition: String,
-    ) : AudioPlayerScreenState
-
-    data class Paused(
-        val currentPosition: String,
-    ) : AudioPlayerScreenState
+data class AudioPlayerScreenState(
+    val playerState: PlayerState,
+    val isPlaying: Boolean,
+    val isFavorite: Boolean,
+    val currentPosition: String,
+) {
+    enum class PlayerState {
+        NO_PREVIEW_AVAILABLE,
+        LOADING,
+        READY,
+    }
 }

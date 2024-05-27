@@ -17,9 +17,9 @@ import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
-    private var previewUrl: String? = null
+    private var track: Track? = null
     private val viewModel: AudioPlayerViewModel by viewModel {
-        parametersOf(previewUrl)
+        parametersOf(track)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,13 +30,15 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        val track = intent.serializable<Track>(TRACK_KEY_EXTRA)!!
-        previewUrl = track.previewUrl
-        initTrackFields(track)
+        track = intent.serializable<Track>(TRACK_KEY_EXTRA)!!
+        initTrackFields(track!!)
 
         with(viewModel) {
             binding.playButton.setOnClickListener {
                 playbackControl()
+            }
+            binding.addToFavoritesButton.setOnClickListener {
+                onFavoriteClicked()
             }
             audioPlayerScreenStateLiveData.observe(this@AudioPlayerActivity, ::render)
         }
@@ -79,27 +81,18 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun render(state: AudioPlayerScreenState) = with(binding) {
-        playButton.isEnabled =
-            (state is AudioPlayerScreenState.Playing) || (state is AudioPlayerScreenState.Paused)
-        when (state) {
-            is AudioPlayerScreenState.NoPreviewAvailable -> {
-                currentPositionTextView.text = getString(R.string.no_preview_message)
-            }
-
-            is AudioPlayerScreenState.Loading -> {
-                currentPositionTextView.text = getString(R.string.preview_is_loading_message)
-            }
-
-            is AudioPlayerScreenState.Playing -> {
-                playButton.setImageResource(R.drawable.pause)
-                currentPositionTextView.text = state.currentPosition
-            }
-
-            is AudioPlayerScreenState.Paused -> {
-                playButton.setImageResource(R.drawable.play)
-                currentPositionTextView.text = state.currentPosition
-            }
+        playButton.isEnabled = state.playerState == AudioPlayerScreenState.PlayerState.READY
+        currentPositionTextView.text = when (state.playerState) {
+            AudioPlayerScreenState.PlayerState.READY -> state.currentPosition
+            AudioPlayerScreenState.PlayerState.LOADING -> getString(R.string.preview_is_loading_message)
+            AudioPlayerScreenState.PlayerState.NO_PREVIEW_AVAILABLE -> getString(R.string.no_preview_message)
         }
+        playButton.setImageResource(
+            if (state.isPlaying) R.drawable.pause else R.drawable.play
+        )
+        addToFavoritesButton.setImageResource(
+            if (state.isFavorite) R.drawable.remove_from_favorites else R.drawable.add_to_favorites
+        )
     }
 
     companion object {

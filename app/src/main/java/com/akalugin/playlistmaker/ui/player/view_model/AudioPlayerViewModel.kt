@@ -15,18 +15,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
-    private val track: Track,
+    private val track: Track?,
     private val audioPlayerInteractor: AudioPlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
 ) : ViewModel() {
     private var screenState =
         AudioPlayerScreenState(
-            if (track.previewUrl.isEmpty())
+            if (track == null || track.previewUrl.isEmpty())
                 AudioPlayerScreenState.PlayerState.NO_PREVIEW_AVAILABLE
             else
                 AudioPlayerScreenState.PlayerState.LOADING,
             false,
-            track.isFavorite,
+            track?.isFavorite ?: false,
             ""
         )
         set(value) {
@@ -82,8 +82,10 @@ class AudioPlayerViewModel(
                     )
             }
 
-            if (track.previewUrl.isNotEmpty()) {
-                prepare(track.previewUrl)
+            track?.let { track ->
+                if (track.previewUrl.isNotEmpty()) {
+                    prepare(track.previewUrl)
+                }
             }
         }
     }
@@ -96,19 +98,22 @@ class AudioPlayerViewModel(
         audioPlayerInteractor.playbackControl()
     }
 
-    fun release() {
+    override fun onCleared() {
+        super.onCleared()
         audioPlayerInteractor.release()
     }
 
     fun onFavoriteClicked() {
-        viewModelScope.launch {
-            if (track.isFavorite) {
-                favoriteTracksInteractor.removeFromFavorites(track)
-            } else {
-                favoriteTracksInteractor.addToFavorites(track)
+        track?.let { track ->
+            viewModelScope.launch {
+                if (track.isFavorite) {
+                    favoriteTracksInteractor.removeFromFavorites(track)
+                } else {
+                    favoriteTracksInteractor.addToFavorites(track)
+                }
+                track.isFavorite = !track.isFavorite
+                screenState = screenState.copy(isFavorite = track.isFavorite)
             }
-            track.isFavorite = !track.isFavorite
-            screenState = screenState.copy(isFavorite = track.isFavorite)
         }
     }
 

@@ -30,8 +30,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        track = intent.serializable<Track>(TRACK_KEY_EXTRA)!!
-        initTrackFields(track!!)
+        track = intent.serializable<Track>(TRACK_KEY_EXTRA)
+        initTrackFields(track)
 
         with(viewModel) {
             binding.playButton.setOnClickListener {
@@ -49,16 +49,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.pause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.release()
-    }
-
-    private fun initTrackFields(track: Track) {
+    private fun initTrackFields(track: Track?) {
         val artworkCornerRadiusPx =
             dpToPx(resources.getDimension(R.dimen.player_artwork_corner_radius), this)
         Glide.with(this)
-            .load(track.bigArtworkUrl)
+            .load(track?.bigArtworkUrl)
             .placeholder(R.drawable.album_placeholder)
             .fitCenter()
             .transform(RoundedCorners(artworkCornerRadiusPx))
@@ -67,16 +62,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         with(binding) {
             toolbar.setNavigationOnClickListener { finish() }
 
-            trackNameTextView.text = track.trackName
-            artistNameTextView.text = track.artistName
-            trackTimeTextView.text = track.trackTime
+            track?.let { track ->
+                trackNameTextView.text = track.trackName
+                artistNameTextView.text = track.artistName
+                trackTimeTextView.text = track.trackTime
 
-            albumFieldGroup.isVisible = track.collectionName.isNotEmpty()
-            albumTextView.text = track.collectionName
+                albumFieldGroup.isVisible = track.collectionName.isNotEmpty()
+                albumTextView.text = track.collectionName
 
-            yearTextView.text = track.releaseYear
-            genreTextView.text = track.primaryGenreName
-            countryTextView.text = track.country
+                yearTextView.text = track.releaseYear
+                genreTextView.text = track.primaryGenreName
+                countryTextView.text = track.country
+            }
         }
     }
 

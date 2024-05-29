@@ -5,7 +5,7 @@ import com.akalugin.playlistmaker.data.db.mapper.FavoriteTrackMapper
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksRepository
 import com.akalugin.playlistmaker.domain.search.models.Track
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class FavoriteTracksRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -13,9 +13,8 @@ class FavoriteTracksRepositoryImpl(
     private val trackDao
         get() = appDatabase.trackDao()
     override val favorites: Flow<List<Track>>
-        get() = flow {
-            emit(trackDao.get().map(FavoriteTrackMapper::map))
-        }
+        get() =
+            trackDao.get().map { it.map(FavoriteTrackMapper::map) }
 
     override suspend fun addToFavorites(track: Track) =
         trackDao.add(FavoriteTrackMapper.map(track))

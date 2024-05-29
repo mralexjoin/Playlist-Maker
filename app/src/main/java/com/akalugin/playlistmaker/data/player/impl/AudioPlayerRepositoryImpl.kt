@@ -29,8 +29,10 @@ class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : AudioPla
     }
 
     override fun pause() {
-        mediaPlayer.pause()
-        state = AudioPlayerState.PAUSED
+        if (state == AudioPlayerState.PLAYING) {
+            mediaPlayer.pause()
+            state = AudioPlayerState.PAUSED
+        }
     }
 
     override fun playbackControl() {

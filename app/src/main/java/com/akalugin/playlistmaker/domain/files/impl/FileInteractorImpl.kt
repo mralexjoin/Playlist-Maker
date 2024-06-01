@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 class FileInteractorImpl(
     private val fileRepository: FileRepository,
 ) : FileInteractor {
-    override suspend fun saveImageToPrivateStorage(uri: Uri): Flow<String> =
+    override suspend fun saveImageToPrivateStorage(uri: Uri): String =
         fileRepository.saveImageToPrivateStorage(uri)
 }

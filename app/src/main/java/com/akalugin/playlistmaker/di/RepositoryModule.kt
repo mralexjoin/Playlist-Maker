@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import com.akalugin.playlistmaker.App
 import com.akalugin.playlistmaker.data.favorites.impl.FavoriteTracksRepositoryImpl
 import com.akalugin.playlistmaker.data.files.FileRepositoryImpl
-import com.akalugin.playlistmaker.data.files.PermissionRepositoryImpl
 import com.akalugin.playlistmaker.data.player.impl.AudioPlayerRepositoryImpl
 import com.akalugin.playlistmaker.data.playlists.impl.PlaylistRepositoryImpl
 import com.akalugin.playlistmaker.data.search.impl.SearchHistoryRepositoryImpl
@@ -13,7 +12,6 @@ import com.akalugin.playlistmaker.data.settings.impl.SettingsRepositoryImpl
 import com.akalugin.playlistmaker.data.sharing.impl.ResourceRepositoryImpl
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksRepository
 import com.akalugin.playlistmaker.domain.files.FileRepository
-import com.akalugin.playlistmaker.domain.files.PermissionRepository
 import com.akalugin.playlistmaker.domain.player.AudioPlayerRepository
 import com.akalugin.playlistmaker.domain.playlists.PlaylistRepository
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryRepository
@@ -49,18 +47,14 @@ val repositoryModule = module {
     }
 
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(get())
+        PlaylistRepositoryImpl(get(), get())
     }
 
     single<TracksRepository> {
         TracksRepositoryImpl(get(), get())
     }
 
-    single<PermissionRepository> {
-        PermissionRepositoryImpl(get())
-    }
-
     single<FileRepository> {
-        FileRepositoryImpl(get())
+        FileRepositoryImpl(androidContext())
     }
 }

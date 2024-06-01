@@ -5,10 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryInteractor
-import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.domain.search.tracks.TracksInteractor
 import com.akalugin.playlistmaker.domain.search.util.TracksData
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.search.models.SearchState
+import com.akalugin.playlistmaker.ui.utils.ClickDebounce
 import com.akalugin.playlistmaker.ui.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,6 +37,9 @@ class SearchViewModel(
         get() = _clearButtonVisibilityLiveData
 
     private var searchJob: Job? = null
+
+    private val clickDebounce = ClickDebounce(viewModelScope)
+    fun clickDebounce(function: () -> Unit) = clickDebounce.debounce(function)
 
     fun onSearchInputChanged(changedText: String) {
         if (latestSearchText == changedText)

@@ -38,7 +38,7 @@
         tools:layout="@layout/activity_audio_player" />
     <fragment
         android:id="@+id/newPlaylistFragment"
-        android:name="com.akalugin.playlistmaker.ui.library.playlists.fragments.NewPlaylistFragment"
+        android:name="com.akalugin.playlistmaker.ui.library.playlists.creation.fragments.NewPlaylistFragment"
         android:label="@string/new_playlist"
         tools:layout="@layout/fragment_new_playlist" />
 </navigation>

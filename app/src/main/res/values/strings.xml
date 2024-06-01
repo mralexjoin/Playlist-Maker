@@ -42,4 +42,15 @@
     <string name="playlist_name_hint">Название*</string>
     <string name="playlist_description_hint">Описание</string>
     <string name="create_playlist">Создать</string>
+    <string name="new_playlist_close_confirm_dialog_title">Завершить создание плейлиста?</string>
+    <string name="new_playlist_close_confirm_dialog_message">Все несохраненные данные будут потеряны</string>
+    <string name="new_playlist_close_confirm_dialog_negative">Отмена</string>
+    <string name="new_playlist_close_confirm_dialog_positive">Завершить</string>
+    <string name="playlist_created_message">Плейлист %1$s создан</string>
+    <string name="playlist_image_description">Изображние плейлиста</string>
+    <plurals name="number_of_tracks">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трекa</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

@@ -8,8 +8,7 @@ import android.os.Environment
 import com.akalugin.playlistmaker.BuildConfig
 import com.akalugin.playlistmaker.domain.files.FileRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -27,7 +26,7 @@ class FileRepositoryImpl(applicationContext: Context) : FileRepository {
         }
     }
 
-    override suspend fun saveImageToPrivateStorage(uri: Uri) = flow {
+    override suspend fun saveImageToPrivateStorage(uri: Uri): String = withContext(Dispatchers.IO) {
         val file = File.createTempFile(IMAGE_FILE_PREFIX, IMAGE_FILE_SUFFIX, filePath)
         val inputStream = contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
@@ -38,9 +37,8 @@ class FileRepositoryImpl(applicationContext: Context) : FileRepository {
         inputStream?.close()
         outputStream.close()
 
-        emit(file.path)
+        return@withContext file.path
     }
-        .flowOn(Dispatchers.IO)
 
     private companion object {
         const val IMAGE_FILE_PREFIX = "image_"

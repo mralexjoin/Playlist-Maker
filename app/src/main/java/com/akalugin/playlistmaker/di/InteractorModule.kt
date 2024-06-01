@@ -3,9 +3,7 @@ package com.akalugin.playlistmaker.di
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksInteractor
 import com.akalugin.playlistmaker.domain.favorites.impl.FavoriteTracksInteractorImpl
 import com.akalugin.playlistmaker.domain.files.FileInteractor
-import com.akalugin.playlistmaker.domain.files.PermissionInteractor
 import com.akalugin.playlistmaker.domain.files.impl.FileInteractorImpl
-import com.akalugin.playlistmaker.domain.files.impl.PermissionInteractorImpl
 import com.akalugin.playlistmaker.domain.player.AudioPlayerInteractor
 import com.akalugin.playlistmaker.domain.player.impl.AudioPlayerInteractorImpl
 import com.akalugin.playlistmaker.domain.playlists.PlaylistInteractor
@@ -47,10 +45,6 @@ val interactorModule = module {
 
     single<PlaylistInteractor> {
         PlaylistInteractorImpl(get())
-    }
-
-    single<PermissionInteractor> {
-        PermissionInteractorImpl(get())
     }
 
     single<FileInteractor> {

@@ -2,8 +2,8 @@ package com.akalugin.playlistmaker.di
 
 import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.library.favorites.view_model.FavoritesViewModel
-import com.akalugin.playlistmaker.ui.library.playlists.view_model.NewPlaylistViewModel
-import com.akalugin.playlistmaker.ui.library.playlists.view_model.PlaylistsViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.creation.view_model.NewPlaylistViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.list.view_model.PlaylistsViewModel
 import com.akalugin.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
 import com.akalugin.playlistmaker.ui.settings.view_model.SettingsViewModel

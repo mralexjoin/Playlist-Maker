@@ -1,11 +1,9 @@
 package com.akalugin.playlistmaker.domain.playlists.models
 
-import com.akalugin.playlistmaker.domain.track.models.Track
-
 data class Playlist(
-    val playlistId: Int,
+    val playlistId: Int = 0,
     val name: String,
-    val imagePath: String?,
-    val description: String?,
-    val tracks: List<Track>,
+    val imagePath: String? = null,
+    val description: String? = null,
+    val trackCount: Int = 0,
 )

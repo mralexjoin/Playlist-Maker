@@ -17,14 +17,17 @@ class TrackViewHolder(
     )
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(model: Track) {
-        binding.apply {
+        with(binding) {
             trackNameTextView.text = model.trackName
             artistNameTextView.text = model.artistName
             trackTimeTextView.text = model.trackTime
 
             val context = itemView.context
             val artworkCornerRadiusPx =
-                Utils.dpToPx(context.resources.getDimension(R.dimen.track_view_artwork_corner_radius), context)
+                Utils.dpToPx(
+                    context.resources.getDimension(R.dimen.track_view_artwork_corner_radius),
+                    context
+                )
 
             Glide.with(itemView)
                 .load(model.artworkUrl100)

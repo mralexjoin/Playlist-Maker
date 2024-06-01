@@ -4,10 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "playlists")
-data class PlaylistEntity (
+data class PlaylistEntityWithTrackCount(
     @PrimaryKey(autoGenerate = true)
     val playlistId: Int,
     val name: String,
     val imagePath: String?,
     val description: String?,
+    val trackCount: Int,
 )

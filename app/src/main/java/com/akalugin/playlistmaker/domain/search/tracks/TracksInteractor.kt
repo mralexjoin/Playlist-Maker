@@ -1,6 +1,6 @@
 package com.akalugin.playlistmaker.domain.search.tracks
 
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.domain.search.util.TracksData
 import kotlinx.coroutines.flow.Flow
 

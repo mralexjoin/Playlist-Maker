@@ -8,7 +8,7 @@ import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksInteractor
 import com.akalugin.playlistmaker.domain.formatter.Formatter
 import com.akalugin.playlistmaker.domain.player.AudioPlayerInteractor
 import com.akalugin.playlistmaker.domain.player.models.AudioPlayerState
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.player.models.AudioPlayerScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

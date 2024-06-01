@@ -10,6 +10,8 @@ import com.akalugin.playlistmaker.data.search.network.impl.RetrofitNetworkClient
 import com.akalugin.playlistmaker.data.sharing.impl.ExternalNavigatorImpl
 import com.akalugin.playlistmaker.domain.sharing.ExternalNavigator
 import com.google.gson.Gson
+import com.markodevcic.peko.PermissionRequester
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -42,7 +44,12 @@ val dataModule = module {
     }
 
     single {
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, BuildConfig.DATABASE_FILE)
             .build()
+    }
+
+    single {
+        PermissionRequester.initialize(androidApplication())
+        PermissionRequester.instance()
     }
 }

@@ -2,7 +2,7 @@ package com.akalugin.playlistmaker.domain.favorites.impl
 
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksInteractor
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksRepository
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import kotlinx.coroutines.flow.Flow
 
 class FavoriteTracksInteractorImpl(

@@ -6,7 +6,7 @@ import com.akalugin.playlistmaker.data.search.filter.TracksFilter
 import com.akalugin.playlistmaker.data.search.mapper.TrackMapper
 import com.akalugin.playlistmaker.data.search.network.NetworkClient
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksRepository
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.domain.search.tracks.TracksRepository
 import com.akalugin.playlistmaker.domain.search.util.TracksData
 import com.akalugin.playlistmaker.domain.search.util.TracksSearchError

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.player.models.AudioPlayerScreenState
 import com.akalugin.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.akalugin.playlistmaker.ui.utils.Utils.dpToPx
@@ -51,7 +51,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun initTrackFields(track: Track?) {
         val artworkCornerRadiusPx =
-            dpToPx(resources.getDimension(R.dimen.player_artwork_corner_radius), this)
+            dpToPx(resources.getDimension(R.dimen.big_image_corner_radius), this)
         Glide.with(this)
             .load(track?.bigArtworkUrl)
             .placeholder(R.drawable.album_placeholder)

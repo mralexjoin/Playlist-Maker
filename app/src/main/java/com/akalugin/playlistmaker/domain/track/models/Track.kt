@@ -1,4 +1,4 @@
-package com.akalugin.playlistmaker.domain.search.models
+package com.akalugin.playlistmaker.domain.track.models
 
 import java.io.Serializable
 

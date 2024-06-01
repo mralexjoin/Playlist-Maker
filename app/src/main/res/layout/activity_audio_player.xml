@@ -20,21 +20,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/audio_player_horizontal_padding" />
+        app:layout_constraintGuide_begin="@dimen/common_horizontal_padding" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/rightGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/audio_player_horizontal_padding" />
+        app:layout_constraintGuide_end="@dimen/common_horizontal_padding" />
 
 
     <ImageView
         android:id="@+id/artworkImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="@dimen/margin_top"
         android:contentDescription="@string/artwork_description"
         android:scaleType="center"
         app:layout_constraintBottom_toTopOf="@id/trackNameTextView"
@@ -74,7 +74,7 @@
         android:id="@+id/playButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/audio_player_medium_margin"
+        android:layout_marginTop="@dimen/common_medium_margin"
         android:background="@null"
         android:contentDescription="@string/play_content_description"
         android:enabled="false"
@@ -206,7 +206,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="end"
-        app:barrierMargin="@dimen/audio_player_medium_margin"
+        app:barrierMargin="@dimen/common_medium_margin"
         app:constraint_referenced_tags="trackInfoHeaderTag" />
 
     <TextView
@@ -214,7 +214,7 @@
         style="@style/TrackInfoFieldTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/audio_player_medium_margin"
+        android:layout_marginTop="@dimen/common_medium_margin"
         android:gravity="end"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/albumTextView"

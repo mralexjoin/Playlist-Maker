@@ -2,7 +2,7 @@ package com.akalugin.playlistmaker.domain.search.impl
 
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryInteractor
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryRepository
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import kotlinx.coroutines.flow.Flow
 
 class SearchHistoryInteractorImpl(

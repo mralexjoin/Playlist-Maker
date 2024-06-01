@@ -3,7 +3,7 @@ package com.akalugin.playlistmaker.data.search.impl
 import android.content.SharedPreferences
 import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksRepository
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryRepository
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow

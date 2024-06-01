@@ -1,6 +1,6 @@
 package com.akalugin.playlistmaker.domain.search.history
 
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryRepository {

@@ -3,7 +3,7 @@ package com.akalugin.playlistmaker.ui.search.track
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 
 class TrackAdapter : RecyclerView.Adapter<TrackViewHolder>() {
     private var tracks = listOf<Track>()

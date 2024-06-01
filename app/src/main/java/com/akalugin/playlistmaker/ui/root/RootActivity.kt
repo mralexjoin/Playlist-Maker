@@ -9,6 +9,7 @@ import com.akalugin.playlistmaker.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRootBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -20,15 +21,6 @@ class RootActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
-
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.toolbar.title = getString(
-                when (destination.id) {
-                    R.id.searchFragment -> R.string.search
-                    R.id.libraryFragment -> R.string.library
-                    else -> R.string.settings
-                }
-            )
-        }
+        binding.toolbar.setupWithNavController(navController)
     }
 }

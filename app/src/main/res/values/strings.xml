@@ -38,4 +38,8 @@
     <string name="favorites_tracks">Избранные треки</string>
     <string name="media_player">Медиаплейер</string>
     <string name="page_header">Заголовок</string>
+    <string name="add_playlist_image_button">Кнопка добавления изображения плейлиста</string>
+    <string name="playlist_name_hint">Название*</string>
+    <string name="playlist_description_hint">Описание</string>
+    <string name="create_playlist">Создать</string>
 </resources>

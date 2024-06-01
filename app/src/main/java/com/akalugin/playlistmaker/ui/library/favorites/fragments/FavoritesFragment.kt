@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akalugin.playlistmaker.databinding.FragmentFavoritesBinding
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.library.favorites.models.FavoritesState
 import com.akalugin.playlistmaker.ui.library.favorites.view_model.FavoritesViewModel
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter

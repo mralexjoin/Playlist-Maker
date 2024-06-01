@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
 import java.io.Serializable
 
@@ -28,6 +28,5 @@ object Utils {
             putExtra(AudioPlayerActivity.TRACK_KEY_EXTRA, track)
         }
         fragment.startActivity(intent)
-
     }
 }

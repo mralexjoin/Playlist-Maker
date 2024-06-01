@@ -1,7 +1,6 @@
 package com.akalugin.playlistmaker.ui.search.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,13 +14,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akalugin.playlistmaker.databinding.FragmentSearchBinding
-import com.akalugin.playlistmaker.domain.search.models.Track
-import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
 import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.akalugin.playlistmaker.ui.utils.ClickDebounce
+import com.akalugin.playlistmaker.ui.utils.Utils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -35,7 +32,7 @@ class SearchFragment : Fragment() {
 
     private val trackAdapter = TrackAdapter()
 
-    private var isClickAllowed = true
+    private val clickDebounce = ClickDebounce(lifecycleScope, CLICK_DEBOUNCE_DELAY_MILLIS)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,7 +102,7 @@ class SearchFragment : Fragment() {
                 }
 
                 updateSearchResultsButton.setOnClickListener {
-                    if (clickDebounce()) {
+                    clickDebounce.debounce {
                         searchTracks(searchInputEditText.toString())
                     }
                 }
@@ -138,9 +135,9 @@ class SearchFragment : Fragment() {
                 searchResultsRecyclerView.isVisible = true
                 trackAdapter.setItems(state.tracks)
                 trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
-                    if (clickDebounce()) {
+                    clickDebounce.debounce {
                         viewModel.addTrackToHistory(track)
-                        playTrack(track)
+                        Utils.playTrack(this@SearchFragment, track)
                     }
                 }
             }
@@ -153,8 +150,8 @@ class SearchFragment : Fragment() {
                 searchHistoryLayout.isVisible = true
                 trackAdapter.setItems(state.tracks)
                 trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
-                    if (clickDebounce()) {
-                        playTrack(track)
+                    clickDebounce.debounce {
+                        Utils.playTrack(this@SearchFragment, track)
                     }
                 }
             }
@@ -173,23 +170,6 @@ class SearchFragment : Fragment() {
 
     private fun showToast(message: String) {
         Toast.makeText(requireActivity().applicationContext, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun playTrack(track: Track) {
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
-            putExtra(AudioPlayerActivity.TRACK_KEY_EXTRA, track)
-        }
-        startActivity(intent)
-    }
-
-    private fun clickDebounce() = isClickAllowed.also {
-        if (isClickAllowed) {
-            isClickAllowed = false
-            lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
-                isClickAllowed = true
-            }
-        }
     }
 
     private companion object {

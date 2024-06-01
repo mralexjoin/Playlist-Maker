@@ -1,24 +1,26 @@
 package com.akalugin.playlistmaker.data.search.impl
 
 import android.content.SharedPreferences
+import com.akalugin.playlistmaker.domain.favorites.FavoriteTracksRepository
 import com.akalugin.playlistmaker.domain.search.history.SearchHistoryRepository
 import com.akalugin.playlistmaker.domain.search.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchHistoryRepositoryImpl(
     private val sharedPreferences: SharedPreferences,
     private val gson: Gson,
+    private val favoriteTracksRepository: FavoriteTracksRepository,
 ) : SearchHistoryRepository {
     private val listOfTracksType = object : TypeToken<List<Track>>() {}.type
 
-    override var onItemsChangedListener: SearchHistoryRepository.OnItemsChangedListener? = null
-        set(value) {
-            field = value
-            onItemsChangedListener?.onItemsChanged(load())
-        }
+    override suspend fun getHistory(): Flow<List<Track>> = flow {
+        emit(load())
+    }
 
-    override fun add(track: Track) {
+    override suspend fun add(track: Track) {
         val tracks: MutableList<Track> = load().toMutableList().apply {
             removeAll { it.trackId == track.trackId }
             if (size >= MAX_SIZE)
@@ -38,13 +40,13 @@ class SearchHistoryRepositoryImpl(
         sharedPreferences.edit()
             .putString(KEY_SEARCH_HISTORY, json)
             .apply()
-
-        onItemsChangedListener?.onItemsChanged(tracks)
     }
 
-    private fun load(): List<Track> {
+    private suspend fun load(): List<Track> {
         val json = sharedPreferences.getString(KEY_SEARCH_HISTORY, null) ?: return emptyList()
-        return gson.fromJson(json, listOfTracksType)
+        val tracks: List<Track> = gson.fromJson(json, listOfTracksType)
+        favoriteTracksRepository.setIsFavorite(tracks)
+        return tracks
     }
 
     private companion object {

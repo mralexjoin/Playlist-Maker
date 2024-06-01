@@ -17,9 +17,9 @@ import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
-    private var previewUrl: String? = null
+    private var track: Track? = null
     private val viewModel: AudioPlayerViewModel by viewModel {
-        parametersOf(previewUrl)
+        parametersOf(track)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,13 +30,15 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        val track = intent.serializable<Track>(TRACK_KEY_EXTRA)!!
-        previewUrl = track.previewUrl
+        track = intent.serializable<Track>(TRACK_KEY_EXTRA)
         initTrackFields(track)
 
         with(viewModel) {
             binding.playButton.setOnClickListener {
                 playbackControl()
+            }
+            binding.addToFavoritesButton.setOnClickListener {
+                onFavoriteClicked()
             }
             audioPlayerScreenStateLiveData.observe(this@AudioPlayerActivity, ::render)
         }
@@ -47,16 +49,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.pause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.release()
-    }
-
-    private fun initTrackFields(track: Track) {
+    private fun initTrackFields(track: Track?) {
         val artworkCornerRadiusPx =
             dpToPx(resources.getDimension(R.dimen.player_artwork_corner_radius), this)
         Glide.with(this)
-            .load(track.bigArtworkUrl)
+            .load(track?.bigArtworkUrl)
             .placeholder(R.drawable.album_placeholder)
             .fitCenter()
             .transform(RoundedCorners(artworkCornerRadiusPx))
@@ -65,41 +62,34 @@ class AudioPlayerActivity : AppCompatActivity() {
         with(binding) {
             toolbar.setNavigationOnClickListener { finish() }
 
-            trackNameTextView.text = track.trackName
-            artistNameTextView.text = track.artistName
-            trackTimeTextView.text = track.trackTime
+            track?.let { track ->
+                trackNameTextView.text = track.trackName
+                artistNameTextView.text = track.artistName
+                trackTimeTextView.text = track.trackTime
 
-            albumFieldGroup.isVisible = track.collectionName.isNotEmpty()
-            albumTextView.text = track.collectionName
+                albumFieldGroup.isVisible = track.collectionName.isNotEmpty()
+                albumTextView.text = track.collectionName
 
-            yearTextView.text = track.releaseYear
-            genreTextView.text = track.primaryGenreName
-            countryTextView.text = track.country
+                yearTextView.text = track.releaseYear
+                genreTextView.text = track.primaryGenreName
+                countryTextView.text = track.country
+            }
         }
     }
 
     private fun render(state: AudioPlayerScreenState) = with(binding) {
-        playButton.isEnabled =
-            (state is AudioPlayerScreenState.Playing) || (state is AudioPlayerScreenState.Paused)
-        when (state) {
-            is AudioPlayerScreenState.NoPreviewAvailable -> {
-                currentPositionTextView.text = getString(R.string.no_preview_message)
-            }
-
-            is AudioPlayerScreenState.Loading -> {
-                currentPositionTextView.text = getString(R.string.preview_is_loading_message)
-            }
-
-            is AudioPlayerScreenState.Playing -> {
-                playButton.setImageResource(R.drawable.pause)
-                currentPositionTextView.text = state.currentPosition
-            }
-
-            is AudioPlayerScreenState.Paused -> {
-                playButton.setImageResource(R.drawable.play)
-                currentPositionTextView.text = state.currentPosition
-            }
+        playButton.isEnabled = state.playerState == AudioPlayerScreenState.PlayerState.READY
+        currentPositionTextView.text = when (state.playerState) {
+            AudioPlayerScreenState.PlayerState.READY -> state.currentPosition
+            AudioPlayerScreenState.PlayerState.LOADING -> getString(R.string.preview_is_loading_message)
+            AudioPlayerScreenState.PlayerState.NO_PREVIEW_AVAILABLE -> getString(R.string.no_preview_message)
         }
+        playButton.setImageResource(
+            if (state.isPlaying) R.drawable.pause else R.drawable.play
+        )
+        addToFavoritesButton.setImageResource(
+            if (state.isFavorite) R.drawable.remove_from_favorites else R.drawable.add_to_favorites
+        )
     }
 
     companion object {

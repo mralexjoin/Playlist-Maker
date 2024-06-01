@@ -9,11 +9,11 @@
         android:id="@+id/toolbar"
         style="@style/Toolbar"
         android:contentDescription="@string/search_toolbar_description"
-        app:title="@string/media_player"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/arrow_back" />
+        app:navigationIcon="@drawable/arrow_back"
+        app:title="@string/media_player" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"
@@ -284,6 +284,7 @@
         android:id="@+id/albumFieldGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="albumHeaderTextView, albumTextView"
         tools:visibility="visible" />
 

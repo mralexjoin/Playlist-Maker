@@ -4,7 +4,7 @@ import com.akalugin.playlistmaker.data.search.dto.TrackDto
 import com.akalugin.playlistmaker.domain.formatter.Formatter
 import com.akalugin.playlistmaker.domain.search.models.Track
 
-object TracksMapper {
+object TrackMapper {
     private const val YEAR_LENGTH = 4
     private const val BIG_ARTWORK_URL_SUFFIX = "512x512bb.jpg"
     fun map(trackDto: TrackDto) = Track(

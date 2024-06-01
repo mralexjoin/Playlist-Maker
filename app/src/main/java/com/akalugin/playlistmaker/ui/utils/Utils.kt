@@ -3,8 +3,10 @@ package com.akalugin.playlistmaker.ui.utils
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.util.TypedValue
+import androidx.fragment.app.Fragment
+import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
 import java.io.Serializable
 
 object Utils {
@@ -21,12 +23,11 @@ object Utils {
         else -> @Suppress("Deprecation") getSerializableExtra(key) as? T
     }
 
-    inline fun <reified T : Serializable> Bundle.serializable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializable(
-            key,
-            T::class.java
-        )
+    fun playTrack(fragment: Fragment, track: Track) {
+        val intent = Intent(fragment.requireContext(), AudioPlayerActivity::class.java).apply {
+            putExtra(AudioPlayerActivity.TRACK_KEY_EXTRA, track)
+        }
+        fragment.startActivity(intent)
 
-        else -> @Suppress("Deprecation") getSerializable(key) as? T
     }
 }

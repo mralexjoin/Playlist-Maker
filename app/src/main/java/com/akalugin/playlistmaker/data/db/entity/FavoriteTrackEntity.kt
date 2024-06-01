@@ -1,8 +1,11 @@
-package com.akalugin.playlistmaker.domain.search.models
+package com.akalugin.playlistmaker.data.db.entity
 
-import java.io.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class Track(
+@Entity(tableName = "favorite_tracks")
+data class FavoriteTrackEntity (
+    @PrimaryKey
     val trackId: Int,
     val trackName: String,
     val artistName: String,
@@ -14,5 +17,5 @@ data class Track(
     val country: String,
     val previewUrl: String,
     val bigArtworkUrl: String,
-    var isFavorite: Boolean = false,
-) : Serializable
+    val timestamp: Long = System.currentTimeMillis()
+)

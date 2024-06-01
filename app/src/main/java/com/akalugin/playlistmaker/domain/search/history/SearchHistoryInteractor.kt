@@ -1,15 +1,10 @@
 package com.akalugin.playlistmaker.domain.search.history
 
 import com.akalugin.playlistmaker.domain.search.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface SearchHistoryInteractor {
-    val searchHistoryRepository: SearchHistoryRepository
-
-    var onItemsChangedListener: OnItemsChangedListener?
-    fun addTrack(track: Track)
+    suspend fun getTracks(): Flow<List<Track>>
+    suspend fun addTrack(track: Track)
     fun clearTracks()
-
-    fun interface OnItemsChangedListener {
-        fun onItemsChanged(tracks: List<Track>)
-    }
 }

@@ -1,7 +1,9 @@
 package com.akalugin.playlistmaker.di
 
 import android.content.Context
+import androidx.room.Room
 import com.akalugin.playlistmaker.BuildConfig
+import com.akalugin.playlistmaker.data.db.AppDatabase
 import com.akalugin.playlistmaker.data.search.network.NetworkClient
 import com.akalugin.playlistmaker.data.search.network.impl.ITunesApiService
 import com.akalugin.playlistmaker.data.search.network.impl.RetrofitNetworkClient
@@ -37,5 +39,10 @@ val dataModule = module {
 
     single<ExternalNavigator> {
         ExternalNavigatorImpl(androidContext())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 }

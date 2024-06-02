@@ -5,6 +5,7 @@ data class AudioPlayerScreenState(
     val isPlaying: Boolean,
     val isFavorite: Boolean,
     val currentPosition: String,
+    val isBottomSheetVisible: Boolean,
 ) {
     enum class PlayerState {
         NO_PREVIEW_AVAILABLE,

@@ -1,12 +1,14 @@
 package com.akalugin.playlistmaker.ui.utils
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.util.TypedValue
-import androidx.fragment.app.Fragment
+import androidx.annotation.IdRes
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import com.akalugin.playlistmaker.domain.track.models.Track
-import com.akalugin.playlistmaker.ui.player.activity.AudioPlayerActivity
+import com.akalugin.playlistmaker.ui.player.fragments.AudioPlayerFragment
 import java.io.Serializable
 
 object Utils {
@@ -14,19 +16,16 @@ object Utils {
         TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics
     ).toInt()
 
-    inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializableExtra(
+    inline fun <reified T : Serializable> Bundle.serializable(key: String): T? = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> getSerializable(
             key,
             T::class.java
         )
 
-        else -> @Suppress("Deprecation") getSerializableExtra(key) as? T
+        else -> @Suppress("Deprecation") getSerializable(key) as? T
     }
 
-    fun playTrack(fragment: Fragment, track: Track) {
-        val intent = Intent(fragment.requireContext(), AudioPlayerActivity::class.java).apply {
-            putExtra(AudioPlayerActivity.TRACK_KEY_EXTRA, track)
-        }
-        fragment.startActivity(intent)
+    fun playTrack(navController: NavController, @IdRes actionId: Int, track: Track) {
+        navController.navigate(actionId, bundleOf(AudioPlayerFragment.TRACK_KEY_EXTRA to track))
     }
 }

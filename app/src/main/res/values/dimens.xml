@@ -27,4 +27,5 @@
     <dimen name="toast_text_size">14sp</dimen>
     <dimen name="grid_layout_padding">4dp</dimen>
     <dimen name="grid_layout_margin">12dp</dimen>
+    <dimen name="small_playlist_view_horizontal_padding">5dp</dimen>
 </resources>

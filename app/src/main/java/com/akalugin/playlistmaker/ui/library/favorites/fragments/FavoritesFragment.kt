@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.FragmentFavoritesBinding
 import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.library.favorites.models.FavoritesState
@@ -37,7 +39,11 @@ class FavoritesFragment : Fragment() {
         }
         trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
             viewModel.clickDebounce {
-                Utils.playTrack(this@FavoritesFragment, track)
+                Utils.playTrack(
+                    findNavController(),
+                    R.id.action_libraryFragment_to_audioPlayerFragment,
+                    track,
+                )
             }
         }
 
@@ -89,6 +95,5 @@ class FavoritesFragment : Fragment() {
 
     companion object {
         fun newInstance() = FavoritesFragment()
-        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1_000L
     }
 }

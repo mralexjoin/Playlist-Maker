@@ -19,7 +19,7 @@ class PlaylistsViewModel(
     fun updatePlaylists() {
         _state.postValue(PlaylistScreenState.Loading)
         viewModelScope.launch {
-            playlistInteractor.getPlaylists().collect { playlists ->
+            playlistInteractor.getPlaylistsWithTrackCount().collect { playlists ->
                 _state.postValue(
                     if (playlists.isEmpty()) {
                         PlaylistScreenState.Empty

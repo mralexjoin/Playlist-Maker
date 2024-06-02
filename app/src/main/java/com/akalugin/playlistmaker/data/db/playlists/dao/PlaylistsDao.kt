@@ -7,7 +7,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistEntity
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistEntityWithTrackCount
+import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistTrackCrossRef
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistWithTracks
+import com.akalugin.playlistmaker.data.db.playlists.entity.TrackEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -26,4 +28,16 @@ interface PlaylistsDao {
     @Transaction
     @Query("SELECT * FROM playlists")
     fun getPlaylistsWithTracks(): Flow<List<PlaylistWithTracks>>
+
+    @Transaction
+    suspend fun addTrackToPlaylist(trackEntity: TrackEntity, playlistId: Int) {
+        insertTrack(trackEntity)
+        insertPlaylistTrackCrossRef(PlaylistTrackCrossRef(playlistId, trackEntity.trackId))
+    }
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTrack(trackEntity: TrackEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertPlaylistTrackCrossRef(playlistTrackCrossRef: PlaylistTrackCrossRef)
 }

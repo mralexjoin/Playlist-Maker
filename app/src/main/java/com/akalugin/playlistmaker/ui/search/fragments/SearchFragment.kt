@@ -11,7 +11,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.FragmentSearchBinding
 import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
@@ -133,7 +135,11 @@ class SearchFragment : Fragment() {
                 trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
                     viewModel.clickDebounce {
                         viewModel.addTrackToHistory(track)
-                        Utils.playTrack(this@SearchFragment, track)
+                        Utils.playTrack(
+                            findNavController(),
+                            R.id.action_searchFragment_to_audioPlayerFragment,
+                            track,
+                        )
                     }
                 }
             }
@@ -147,7 +153,11 @@ class SearchFragment : Fragment() {
                 trackAdapter.setItems(state.tracks)
                 trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
                     viewModel.clickDebounce {
-                        Utils.playTrack(this@SearchFragment, track)
+                        Utils.playTrack(
+                            findNavController(),
+                            R.id.action_searchFragment_to_audioPlayerFragment,
+                            track,
+                        )
                     }
                 }
             }

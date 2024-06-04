@@ -7,19 +7,22 @@ import com.akalugin.playlistmaker.domain.track.models.Track
 object TrackMapper {
     private const val YEAR_LENGTH = 4
     private const val BIG_ARTWORK_URL_SUFFIX = "512x512bb.jpg"
-    fun map(trackDto: TrackDto) = Track(
-        trackId = trackDto.trackId ?: 0,
-        trackName = trackDto.trackName ?: "No track name",
-        artistName = trackDto.artistName ?: "No artist name",
-        trackTime = Formatter.formatMilliseconds(trackDto.trackTimeMillis ?: 0),
-        artworkUrl100 = trackDto.artworkUrl100 ?: "",
-        collectionName = trackDto.collectionName ?: "",
-        releaseYear = getReleaseYear(trackDto.releaseDate ?: ""),
-        primaryGenreName = trackDto.primaryGenreName ?: "",
-        country = trackDto.country ?: "",
-        previewUrl = trackDto.previewUrl ?: "",
-        bigArtworkUrl = bigArtworkUrl(trackDto.artworkUrl100 ?: ""),
-    )
+    fun map(trackDto: TrackDto) = with(trackDto) {
+        Track(
+            trackId = trackId ?: 0,
+            trackName = trackName ?: "No track name",
+            artistName = artistName ?: "No artist name",
+            trackTimeMillis = trackTimeMillis ?: 0,
+            trackTime = Formatter.formatMilliseconds(trackTimeMillis ?: 0),
+            artworkUrl100 = artworkUrl100 ?: "",
+            collectionName = collectionName ?: "",
+            releaseYear = getReleaseYear(releaseDate ?: ""),
+            primaryGenreName = primaryGenreName ?: "",
+            country = country ?: "",
+            previewUrl = previewUrl ?: "",
+            bigArtworkUrl = bigArtworkUrl(artworkUrl100 ?: ""),
+        )
+    }
 
     private fun getReleaseYear(releaseDate: String) =
         if (releaseDate.length > YEAR_LENGTH)

@@ -1,5 +1,6 @@
 package com.akalugin.playlistmaker.domain.sharing.impl
 
+import com.akalugin.playlistmaker.domain.playlists.models.Playlist
 import com.akalugin.playlistmaker.domain.sharing.ExternalNavigator
 import com.akalugin.playlistmaker.domain.sharing.ResourceRepository
 import com.akalugin.playlistmaker.domain.sharing.SharingInteractor
@@ -11,6 +12,10 @@ class SharingInteractorImpl(
 ) : SharingInteractor {
     override fun shareApp() {
         externalNavigator.shareLink(getShareAppLink())
+    }
+
+    override fun sharePlaylist(playlist: Playlist) {
+        externalNavigator.shareLink(resourceRepository.playlistSharingData(playlist))
     }
 
     override fun openTerms() {

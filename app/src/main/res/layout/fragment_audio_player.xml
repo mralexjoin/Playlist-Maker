@@ -293,7 +293,7 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/playlists_bottom_sheet"
+        android:id="@+id/playlistsBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_bg"
@@ -303,12 +303,7 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/bottom_sheet_decoration_background"
+            style="@style/BottomSheetDecoration"
             android:importantForAccessibility="no" />
 
         <TextView

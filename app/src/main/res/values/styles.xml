@@ -117,6 +117,7 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textSize">@dimen/view_text_size</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:background">@drawable/playlist_data_edit_text_background</item>
     </style>
 
     <style name="NewPlaylistTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -150,5 +151,28 @@
 
     <style name="AlertDialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog.Flush">
         <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="BigPlaylistNameTextView">
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="BigPlaylistTextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="BottomSheetDecoration">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:background">@drawable/bottom_sheet_decoration_background</item>
     </style>
 </resources>

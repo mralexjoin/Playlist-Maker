@@ -1,9 +1,11 @@
 package com.akalugin.playlistmaker.ui.library.playlists.list.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -11,9 +13,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.akalugin.playlistmaker.domain.playlists.models.Playlist
-import com.akalugin.playlistmaker.ui.library.playlists.list.models.PlaylistScreenState
+import com.akalugin.playlistmaker.ui.library.playlists.list.models.PlaylistsScreenState
 import com.akalugin.playlistmaker.ui.library.playlists.list.playlist.PlaylistAdapter
 import com.akalugin.playlistmaker.ui.library.playlists.list.view_model.PlaylistsViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.playlist.framents.PlaylistFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -41,6 +44,11 @@ class PlaylistsFragment : Fragment() {
                 findNavController().navigate(R.id.action_libraryFragment_to_newPlaylistFragment)
             }
 
+            playlistAdapter.onClickListener = PlaylistAdapter.OnClickListener { playlist ->
+                val args = bundleOf(PlaylistFragment.PLAYLIST_ID_EXTRA to playlist.playlistId)
+                findNavController().navigate(R.id.action_libraryFragment_to_playlistFragment, args)
+            }
+
             recyclerView.apply {
                 layoutManager = GridLayoutManager(context, COLUMN_COUNT)
                 adapter = playlistAdapter
@@ -53,17 +61,18 @@ class PlaylistsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        Log.d("NPE", "onStart")
         viewModel.updatePlaylists()
     }
 
-    private fun render(playlistScreenState: PlaylistScreenState?) {
-        if (playlistScreenState == null)
+    private fun render(playlistsScreenState: PlaylistsScreenState?) {
+        if (playlistsScreenState == null)
             return
 
-        when(playlistScreenState) {
-            is PlaylistScreenState.Loading -> renderLoading()
-            is PlaylistScreenState.Content -> renderContent(playlistScreenState.playlists)
-            is PlaylistScreenState.Empty -> renderEmpty()
+        when (playlistsScreenState) {
+            is PlaylistsScreenState.Loading -> renderLoading()
+            is PlaylistsScreenState.Content -> renderContent(playlistsScreenState.playlists)
+            is PlaylistsScreenState.Empty -> renderEmpty()
         }
     }
 

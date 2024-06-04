@@ -1,30 +1,32 @@
 package com.akalugin.playlistmaker.ui.library.playlists.list.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akalugin.playlistmaker.domain.playlists.PlaylistInteractor
-import com.akalugin.playlistmaker.ui.library.playlists.list.models.PlaylistScreenState
+import com.akalugin.playlistmaker.ui.library.playlists.list.models.PlaylistsScreenState
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
     private val playlistInteractor: PlaylistInteractor,
 ) : ViewModel() {
 
-    private val _state = MutableLiveData<PlaylistScreenState>(PlaylistScreenState.Loading)
-    val state: LiveData<PlaylistScreenState>
+    private val _state = MutableLiveData<PlaylistsScreenState>(PlaylistsScreenState.Loading)
+    val state: LiveData<PlaylistsScreenState>
         get() = _state
 
     fun updatePlaylists() {
-        _state.postValue(PlaylistScreenState.Loading)
+        Log.d("NPE", "Update started")
+        _state.postValue(PlaylistsScreenState.Loading)
         viewModelScope.launch {
             playlistInteractor.getPlaylistsWithTrackCount().collect { playlists ->
                 _state.postValue(
                     if (playlists.isEmpty()) {
-                        PlaylistScreenState.Empty
+                        PlaylistsScreenState.Empty
                     } else {
-                        PlaylistScreenState.Content(playlists)
+                        PlaylistsScreenState.Content(playlists)
                     }
                 )
             }

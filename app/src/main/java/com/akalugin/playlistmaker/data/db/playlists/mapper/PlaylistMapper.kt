@@ -34,6 +34,7 @@ object PlaylistMapper {
             trackId,
             trackName,
             artistName,
+            trackTimeMillis,
             trackTime,
             artworkUrl100,
             collectionName,
@@ -59,6 +60,7 @@ object PlaylistMapper {
             trackId,
             trackName,
             artistName,
+            trackTimeMillis,
             trackTime,
             artworkUrl100,
             collectionName,
@@ -69,4 +71,10 @@ object PlaylistMapper {
             bigArtworkUrl
         )
     }
+
+    fun mapToPlaylistWithTracks(playlist: Playlist) =
+        PlaylistWithTracks(
+            mapToPlaylistEntity(playlist),
+            playlist.tracks.map(::mapToTrackEntity)
+        )
 }

@@ -38,4 +38,12 @@ class RootActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun hideToolbar() {
+        binding.toolbar.isVisible = false
+    }
+
+    fun showToolbar() {
+        binding.toolbar.isVisible = true
+    }
 }

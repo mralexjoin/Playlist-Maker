@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.SmallPlaylistViewBinding
 import com.akalugin.playlistmaker.domain.playlists.models.Playlist
+import com.akalugin.playlistmaker.ui.library.playlists.utils.PlaylistUtils
 import com.bumptech.glide.Glide
 
 class BottomSheetPlaylistViewHolder(
@@ -19,20 +20,16 @@ class BottomSheetPlaylistViewHolder(
         with(binding) {
             val context = itemView.context
 
-            playlistNameTextView.text = model.name
+            smallPlaylistNameTextView.text = model.name
             val trackCount = model.trackCount
-            trackCountTextView.text =
-                context.resources.getQuantityString(
-                    R.plurals.number_of_tracks,
-                    trackCount,
-                    trackCount
-                )
+            smallPlaylistTrackCountTextView.text =
+                PlaylistUtils.getTrackCount(context.resources, trackCount)
 
             Glide.with(itemView)
                 .load(model.imagePath)
                 .placeholder(R.drawable.album_placeholder)
                 .fitCenter()
-                .into(playlistImageView)
+                .into(smallPlaylistImageView)
         }
     }
 }

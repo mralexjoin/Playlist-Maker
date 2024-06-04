@@ -51,10 +51,31 @@
     <string name="add_to_playlist_message">Добавить в плейлист</string>
     <string name="playlist_contains_track_already">Трек уже добавлен в плейлист %1$s</string>
     <string name="track_added_to_playlist">Добавлено в плейлист %1$s</string>
+    <string name="share_playlist_content_description">Поделиться плейлистом</string>
+    <string name="more_actions_playlist_content_description">Больше действий с плейлистом</string>
+    <string name="playlist">Плейлист</string>
+    <string name="delete_track_dialog_header">Удалить трек</string>
+    <string name="delete_track_dialog_message">Вы уверены, что хотите удалить\nтрек из плейлиста?</string>
+    <string name="delete_track_dialog_option_negative">Отмена</string>
+    <string name="delete_track_dialog_option_positive">Удалить</string>
+    <string name="back_button_description">Вернуться назад</string>
+    <string name="empty_playlist_share_message">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="track_to_share">%1$d. %2$s - %3$s (%4$s)</string>
+    <string name="share_playlist">Поделиться</string>
+    <string name="edit">Редактировать</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="delete_playlist_dialog_message">Хотите удалить плейлист?</string>
+    <string name="delete_playlist_dialog_header">Удалить плейлист</string>
+    <string name="delete">Удалить</string>
     <plurals name="number_of_tracks">
         <item quantity="one">%d трек</item>
-        <item quantity="two">%d трекa</item>
         <item quantity="few">%d трекa</item>
         <item quantity="other">%d треков</item>
+    </plurals>
+    <plurals name="number_of_minutes">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="other">%d минут</item>
     </plurals>
 </resources>

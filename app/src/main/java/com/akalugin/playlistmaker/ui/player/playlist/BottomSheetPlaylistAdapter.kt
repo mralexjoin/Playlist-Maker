@@ -21,7 +21,7 @@ class BottomSheetPlaylistAdapter : RecyclerView.Adapter<BottomSheetPlaylistViewH
     override fun onBindViewHolder(holder: BottomSheetPlaylistViewHolder, position: Int) {
         val playlist = playlists[position]
         holder.bind(playlist)
-        holder.binding.playlistLayout.setOnClickListener {
+        holder.binding.smallPlaylistLayout.setOnClickListener {
             onClickListener?.onClick(playlist)
         }
     }

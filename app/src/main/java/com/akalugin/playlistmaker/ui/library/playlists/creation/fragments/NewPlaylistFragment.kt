@@ -22,11 +22,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-/**
- * A simple [Fragment] subclass.
- * Use the [NewPlaylistFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class NewPlaylistFragment : Fragment() {
     private var _binding: FragmentNewPlaylistBinding? = null
     private val binding: FragmentNewPlaylistBinding
@@ -78,17 +73,19 @@ class NewPlaylistFragment : Fragment() {
             }
         }
 
-        onBackPressedCallback = activity?.onBackPressedDispatcher?.addCallback(this, true) {
-            this@NewPlaylistFragment.context?.let {
-                MaterialAlertDialogBuilder(it)
-                    .setTitle(R.string.new_playlist_close_confirm_dialog_title)
-                    .setMessage(R.string.new_playlist_close_confirm_dialog_message)
-                    .setNegativeButton(R.string.new_playlist_close_confirm_dialog_negative) { _, _ ->
-                    }
-                    .setPositiveButton(R.string.new_playlist_close_confirm_dialog_positive) { _, _ ->
-                        isEnabled = false
-                        findNavController().popBackStack()
-                    }.show()
+        activity?.onBackPressedDispatcher?.let { dispatcher ->
+            dispatcher.addCallback(this, true) {
+                this@NewPlaylistFragment.context?.let {
+                    MaterialAlertDialogBuilder(it)
+                        .setTitle(R.string.new_playlist_close_confirm_dialog_title)
+                        .setMessage(R.string.new_playlist_close_confirm_dialog_message)
+                        .setNegativeButton(R.string.new_playlist_close_confirm_dialog_negative) { _, _ ->
+                        }
+                        .setPositiveButton(R.string.new_playlist_close_confirm_dialog_positive) { _, _ ->
+                            isEnabled = false
+                            dispatcher.onBackPressed()
+                        }.show()
+                }
             }
         }
     }
@@ -123,9 +120,5 @@ class NewPlaylistFragment : Fragment() {
             getString(toastData.first, *toastData.second),
             Toast.LENGTH_LONG
         ).show()
-    }
-
-    companion object {
-        fun newInstance() = NewPlaylistFragment()
     }
 }

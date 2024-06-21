@@ -10,6 +10,7 @@
         <item name="colorOnTertiary">@color/white</item>
         <item name="colorOnTertiaryContainer">@color/white</item>
         <item name="toolbarNavigationButtonStyle">@style/Widget.PlaylistMaker.Toolbar.Button.Navigation</item>
+        <item name="materialAlertDialogTheme">@style/AlertDialogTheme</item>
     </style>
     <style name="Widget.PlaylistMaker.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="tint">@color/white</item>

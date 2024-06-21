@@ -73,8 +73,8 @@ class NewPlaylistFragment : Fragment() {
             }
         }
 
-        activity?.onBackPressedDispatcher?.let { dispatcher ->
-            dispatcher.addCallback(this, true) {
+        onBackPressedCallback = activity?.onBackPressedDispatcher?.let { dispatcher ->
+            dispatcher.addCallback(this, false) {
                 this@NewPlaylistFragment.context?.let {
                     MaterialAlertDialogBuilder(it)
                         .setTitle(R.string.new_playlist_close_confirm_dialog_title)

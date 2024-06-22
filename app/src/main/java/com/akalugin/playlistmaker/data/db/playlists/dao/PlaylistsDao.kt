@@ -33,7 +33,7 @@ interface PlaylistsDao {
 
     @Transaction
     @Query("SELECT * FROM playlists WHERE playlistId = :playlistId")
-    fun getPlaylistWithTracks(playlistId: Int): Flow<PlaylistWithTracks>
+    fun getPlaylistWithTracks(playlistId: Int): Flow<PlaylistWithTracks?>
 
     @Transaction
     suspend fun addTrackToPlaylist(trackEntity: TrackEntity, playlistId: Int) {

@@ -33,14 +33,16 @@ class PlaylistRepositoryImpl(
 
     override fun getPlaylistsWithTracks(): Flow<List<Playlist>> {
         Log.d("NPE", "getPlaylistSWithTracks")
-        return playlistsDao.getPlaylistsWithTracks().map { it.map(PlaylistMapper::mapToPlaylist) }
+        return playlistsDao.getPlaylistsWithTracks().map {
+            it.mapNotNull(PlaylistMapper::mapToPlaylist)
+        }
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         playlistsDao.addTrackToPlaylist(PlaylistMapper.mapToTrackEntity(track), playlist.playlistId)
     }
 
-    override fun getPlaylistWithTracks(playlistId: Int): Flow<Playlist> {
+    override fun getPlaylistWithTracks(playlistId: Int): Flow<Playlist?> {
         return playlistsDao.getPlaylistWithTracks(playlistId).map(PlaylistMapper::mapToPlaylist)
     }
 

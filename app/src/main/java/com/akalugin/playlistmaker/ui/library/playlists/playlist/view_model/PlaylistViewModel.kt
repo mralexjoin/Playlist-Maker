@@ -1,6 +1,5 @@
 package com.akalugin.playlistmaker.ui.library.playlists.playlist.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,7 +33,6 @@ class PlaylistViewModel(
         if (playlistId == null)
             return
 
-        Log.d("NPE", "load playlist")
         viewModelScope.launch {
             updatePlaylist(playlistId)
         }
@@ -44,7 +42,6 @@ class PlaylistViewModel(
         playlist?.let { currentPlaylist ->
             viewModelScope.launch {
                 playlistInteractor.deleteTrackFromPlaylist(track, currentPlaylist)
-                Log.d("NPE", "delete track")
                 updatePlaylist(currentPlaylist.playlistId)
             }
         }
@@ -52,8 +49,10 @@ class PlaylistViewModel(
 
     private suspend fun updatePlaylist(playlistId: Int) {
         playlistInteractor.getPlaylistWithTracks(playlistId).collect {
-            playlist = it
-            _state.postValue(PlaylistScreenState(it))
+            if (it != null) {
+                playlist = it
+                _state.postValue(PlaylistScreenState(it))
+            }
         }
     }
 
@@ -71,7 +70,6 @@ class PlaylistViewModel(
             viewModelScope.launch {
                 playlistInteractor.deletePlaylist(it)
                 _singleLiveEvent.postValue(PlaylistSingleLiveEvent.CloseEvent)
-                Log.d("NPE", "coroutine ended")
             }
         }
     }

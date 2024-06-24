@@ -1,7 +1,7 @@
-package com.akalugin.playlistmaker.data.db.mapper
+package com.akalugin.playlistmaker.data.db.favorites.mapper
 
-import com.akalugin.playlistmaker.data.db.entity.FavoriteTrackEntity
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.data.db.favorites.entity.FavoriteTrackEntity
+import com.akalugin.playlistmaker.domain.track.models.Track
 
 object FavoriteTrackMapper {
     fun map(trackEntity: FavoriteTrackEntity) = with(trackEntity) {

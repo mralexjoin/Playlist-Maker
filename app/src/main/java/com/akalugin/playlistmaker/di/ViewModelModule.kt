@@ -1,8 +1,9 @@
 package com.akalugin.playlistmaker.di
 
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.library.favorites.view_model.FavoritesViewModel
-import com.akalugin.playlistmaker.ui.library.playlists.PlaylistsViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.creation.view_model.NewPlaylistViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.list.view_model.PlaylistsViewModel
 import com.akalugin.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
 import com.akalugin.playlistmaker.ui.settings.view_model.SettingsViewModel
@@ -12,7 +13,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModel { (track: Track) ->
-        AudioPlayerViewModel(track, get(), get())
+        AudioPlayerViewModel(track, get(), get(), get())
     }
 
     viewModelOf(::SearchViewModel)
@@ -21,4 +22,5 @@ val viewModelModule = module {
 
     viewModelOf(::FavoritesViewModel)
     viewModelOf(::PlaylistsViewModel)
+    viewModelOf(::NewPlaylistViewModel)
 }

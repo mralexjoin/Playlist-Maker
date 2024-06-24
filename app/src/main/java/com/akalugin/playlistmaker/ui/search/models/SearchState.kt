@@ -1,6 +1,6 @@
 package com.akalugin.playlistmaker.ui.search.models
 
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 
 sealed interface SearchState {
     data object Loading : SearchState

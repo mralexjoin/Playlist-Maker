@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/newPlaylistConstraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.library.playlists.creation.fragments.NewPlaylistFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/startEditTextGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/common_medium_margin" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/endEditTextGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/common_medium_margin" />
+
+    <ImageButton
+        android:id="@+id/addPlaylistImageButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/playlist_image_margin"
+        android:layout_marginTop="@dimen/margin_top"
+        android:background="@drawable/add_playlist_image_background"
+        android:contentDescription="@string/add_playlist_image_button"
+        android:scaleType="centerInside"
+        android:src="@drawable/add_playlist_image"
+        app:layout_constraintBottom_toTopOf="@id/playlistNameTextInputLayout"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
+        app:layout_constraintStart_toEndOf="@id/startEditTextGuideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/playlistNameTextInputLayout"
+        android:layout_width="0dp"
+        style="@style/NewPlaylistTextInputLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/double_medium_margin"
+        app:layout_constraintBottom_toTopOf="@id/playlistDescriptionTextInputLayout"
+        app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
+        app:layout_constraintStart_toEndOf="@id/startEditTextGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/addPlaylistImageButton">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playlistNameEditText"
+            style="@style/NewPlaylistEditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/playlist_name_hint"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/playlistDescriptionTextInputLayout"
+        android:layout_width="0dp"
+        style="@style/NewPlaylistTextInputLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_medium_margin"
+        app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
+        app:layout_constraintStart_toEndOf="@id/startEditTextGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/playlistNameTextInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/playlistDescriptionEditText"
+            style="@style/NewPlaylistEditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/playlist_description_hint"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/createPlaylistButton"
+        style="@style/CreatePlaylistButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="1dp"
+        android:layout_marginBottom="@dimen/double_medium_margin"
+        android:enabled="false"
+        android:text="@string/create_playlist"
+        tools:enabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
+        app:layout_constraintStart_toEndOf="@id/startEditTextGuideline" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

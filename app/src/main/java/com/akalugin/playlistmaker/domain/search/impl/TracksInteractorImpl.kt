@@ -1,6 +1,6 @@
 package com.akalugin.playlistmaker.domain.search.impl
 
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.domain.search.util.TracksData
 import com.akalugin.playlistmaker.domain.search.tracks.TracksInteractor
 import com.akalugin.playlistmaker.domain.search.tracks.TracksRepository

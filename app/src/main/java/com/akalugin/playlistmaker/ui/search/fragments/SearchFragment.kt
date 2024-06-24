@@ -11,13 +11,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.FragmentSearchBinding
 import com.akalugin.playlistmaker.ui.search.models.SearchState
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
 import com.akalugin.playlistmaker.ui.search.view_model.SearchViewModel
-import com.akalugin.playlistmaker.ui.utils.ClickDebounce
 import com.akalugin.playlistmaker.ui.utils.Utils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,8 +31,6 @@ class SearchFragment : Fragment() {
     private var inputMethodManager: InputMethodManager? = null
 
     private val trackAdapter = TrackAdapter()
-
-    private val clickDebounce = ClickDebounce(lifecycleScope, CLICK_DEBOUNCE_DELAY_MILLIS)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -102,7 +100,7 @@ class SearchFragment : Fragment() {
                 }
 
                 updateSearchResultsButton.setOnClickListener {
-                    clickDebounce.debounce {
+                    viewModel.clickDebounce {
                         searchTracks(searchInputEditText.toString())
                     }
                 }
@@ -135,9 +133,13 @@ class SearchFragment : Fragment() {
                 searchResultsRecyclerView.isVisible = true
                 trackAdapter.setItems(state.tracks)
                 trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
-                    clickDebounce.debounce {
+                    viewModel.clickDebounce {
                         viewModel.addTrackToHistory(track)
-                        Utils.playTrack(this@SearchFragment, track)
+                        Utils.playTrack(
+                            findNavController(),
+                            R.id.action_searchFragment_to_audioPlayerFragment,
+                            track,
+                        )
                     }
                 }
             }
@@ -150,8 +152,12 @@ class SearchFragment : Fragment() {
                 searchHistoryLayout.isVisible = true
                 trackAdapter.setItems(state.tracks)
                 trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
-                    clickDebounce.debounce {
-                        Utils.playTrack(this@SearchFragment, track)
+                    viewModel.clickDebounce {
+                        Utils.playTrack(
+                            findNavController(),
+                            R.id.action_searchFragment_to_audioPlayerFragment,
+                            track,
+                        )
                     }
                 }
             }
@@ -170,9 +176,5 @@ class SearchFragment : Fragment() {
 
     private fun showToast(message: String) {
         Toast.makeText(requireActivity().applicationContext, message, Toast.LENGTH_LONG).show()
-    }
-
-    private companion object {
-        const val CLICK_DEBOUNCE_DELAY_MILLIS = 1_000L
     }
 }

@@ -1,11 +1,11 @@
-package com.akalugin.playlistmaker.data.db.dao
+package com.akalugin.playlistmaker.data.db.favorites.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.akalugin.playlistmaker.data.db.entity.FavoriteTrackEntity
+import com.akalugin.playlistmaker.data.db.favorites.entity.FavoriteTrackEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

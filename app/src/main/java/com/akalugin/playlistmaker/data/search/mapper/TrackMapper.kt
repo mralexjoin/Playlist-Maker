@@ -2,7 +2,7 @@ package com.akalugin.playlistmaker.data.search.mapper
 
 import com.akalugin.playlistmaker.data.search.dto.TrackDto
 import com.akalugin.playlistmaker.domain.formatter.Formatter
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 
 object TrackMapper {
     private const val YEAR_LENGTH = 4

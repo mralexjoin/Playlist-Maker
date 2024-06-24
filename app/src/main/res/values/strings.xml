@@ -38,4 +38,23 @@
     <string name="favorites_tracks">Избранные треки</string>
     <string name="media_player">Медиаплейер</string>
     <string name="page_header">Заголовок</string>
+    <string name="add_playlist_image_button">Кнопка добавления изображения плейлиста</string>
+    <string name="playlist_name_hint">Название*</string>
+    <string name="playlist_description_hint">Описание</string>
+    <string name="create_playlist">Создать</string>
+    <string name="new_playlist_close_confirm_dialog_title">Завершить создание плейлиста?</string>
+    <string name="new_playlist_close_confirm_dialog_message">Все несохраненные данные будут потеряны</string>
+    <string name="new_playlist_close_confirm_dialog_negative">Отмена</string>
+    <string name="new_playlist_close_confirm_dialog_positive">Завершить</string>
+    <string name="playlist_created_message">Плейлист %1$s создан</string>
+    <string name="playlist_image_description">Изображние плейлиста</string>
+    <string name="add_to_playlist_message">Добавить в плейлист</string>
+    <string name="playlist_contains_track_already">Трек уже добавлен в плейлист %1$s</string>
+    <string name="track_added_to_playlist">Добавлено в плейлист %1$s</string>
+    <plurals name="number_of_tracks">
+        <item quantity="one">%d трек</item>
+        <item quantity="two">%d трекa</item>
+        <item quantity="few">%d трекa</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

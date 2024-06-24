@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.FragmentFavoritesBinding
-import com.akalugin.playlistmaker.domain.search.models.Track
+import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.library.favorites.models.FavoritesState
 import com.akalugin.playlistmaker.ui.library.favorites.view_model.FavoritesViewModel
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
-import com.akalugin.playlistmaker.ui.utils.ClickDebounce
 import com.akalugin.playlistmaker.ui.utils.Utils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,7 +25,6 @@ class FavoritesFragment : Fragment() {
     private val viewModel: FavoritesViewModel by viewModel()
     private val trackAdapter = TrackAdapter()
 
-    private val clickDebounce = ClickDebounce(lifecycleScope, CLICK_DEBOUNCE_DELAY_MILLIS)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,8 +38,12 @@ class FavoritesFragment : Fragment() {
             adapter = trackAdapter
         }
         trackAdapter.onClickListener = TrackAdapter.OnClickListener { track ->
-            clickDebounce.debounce {
-                Utils.playTrack(this@FavoritesFragment, track)
+            viewModel.clickDebounce {
+                Utils.playTrack(
+                    findNavController(),
+                    R.id.action_libraryFragment_to_audioPlayerFragment,
+                    track,
+                )
             }
         }
 
@@ -92,6 +95,5 @@ class FavoritesFragment : Fragment() {
 
     companion object {
         fun newInstance() = FavoritesFragment()
-        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1_000L
     }
 }

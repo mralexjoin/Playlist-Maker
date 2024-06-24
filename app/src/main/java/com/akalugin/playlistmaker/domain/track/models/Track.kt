@@ -1,6 +1,7 @@
-package com.akalugin.playlistmaker.domain.search.models
+package com.akalugin.playlistmaker.domain.track.models
 
 import java.io.Serializable
+import java.util.Objects
 
 data class Track(
     val trackId: Int,
@@ -15,4 +16,14 @@ data class Track(
     val previewUrl: String,
     val bigArtworkUrl: String,
     var isFavorite: Boolean = false,
-) : Serializable
+) : Serializable {
+    override fun equals(other: Any?): Boolean {
+        if (other == null)
+            return false
+        if (other !is Track)
+            return false
+        return this.trackId == other.trackId
+    }
+
+    override fun hashCode() = Objects.hashCode(trackId)
+}

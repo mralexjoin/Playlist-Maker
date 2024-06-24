@@ -11,11 +11,21 @@
     <dimen name="search_edit_corner_radius">8dp</dimen>
     <dimen name="track_view_artwork_corner_radius">2dp</dimen>
     <dimen name="button_margin_top">24dp</dimen>
-    <dimen name="audio_player_horizontal_padding">24dp</dimen>
+    <dimen name="common_horizontal_padding">24dp</dimen>
     <dimen name="audio_player_track_info_horizontal_padding">16dp</dimen>
-    <dimen name="audio_player_medium_margin">16dp</dimen>
+    <dimen name="common_medium_margin">16dp</dimen>
     <dimen name="player_small_buttons_size">51dp</dimen>
-    <dimen name="player_artwork_corner_radius">8dp</dimen>
+    <dimen name="big_image_corner_radius">8dp</dimen>
     <dimen name="progress_bar_size">44dp</dimen>
     <dimen name="empty_library_text_view_margin_top">106dp</dimen>
+    <dimen name="margin_top">26dp</dimen>
+    <dimen name="double_medium_margin">32dp</dimen>
+    <dimen name="playlist_image_margin">8dp</dimen>
+    <dimen name="add_playlist_image_dash_width">30dp</dimen>
+    <dimen name="new_playlist_data_edit_text_corner_radius">4dp</dimen>
+    <dimen name="new_playlist_data_edit_text_corner_width">1dp</dimen>
+    <dimen name="toast_text_size">14sp</dimen>
+    <dimen name="grid_layout_padding">4dp</dimen>
+    <dimen name="grid_layout_margin">12dp</dimen>
+    <dimen name="small_playlist_view_horizontal_padding">5dp</dimen>
 </resources>

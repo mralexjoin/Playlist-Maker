@@ -1,4 +1,4 @@
-package com.akalugin.playlistmaker.data.db.entity
+package com.akalugin.playlistmaker.data.db.favorites.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -17,5 +17,5 @@ data class FavoriteTrackEntity (
     val country: String,
     val previewUrl: String,
     val bigArtworkUrl: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 )

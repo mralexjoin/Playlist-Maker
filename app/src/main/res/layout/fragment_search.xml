@@ -62,11 +62,11 @@
             style="@style/ErrorTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
             android:text="@string/nothing_found"
             android:visibility="gone"
             app:drawableTopCompat="@drawable/nothing_found"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/networkErrorLayout"
@@ -87,7 +87,7 @@
 
             <Button
                 android:id="@+id/updateSearchResultsButton"
-                style="@style/SearchActivityButton"
+                style="@style/SimpleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin_top"
@@ -121,7 +121,7 @@
 
             <Button
                 android:id="@+id/clearSearchHistoryButton"
-                style="@style/SearchActivityButton"
+                style="@style/SimpleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin_top"

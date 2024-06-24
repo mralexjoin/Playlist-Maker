@@ -2,13 +2,16 @@ package com.akalugin.playlistmaker.ui.root
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRootBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,17 +21,21 @@ class RootActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
 
-        binding.bottomNavigationView.setupWithNavController(navController)
+        with(binding) {
+            bottomNavigationView.setupWithNavController(navController)
+            toolbar.setupWithNavController(navController, appBarConfiguration)
+            toolbar.setNavigationOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.toolbar.title = getString(
-                when (destination.id) {
-                    R.id.searchFragment -> R.string.search
-                    R.id.libraryFragment -> R.string.library
-                    else -> R.string.settings
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                bottomNavigationView.isVisible = when (destination.id) {
+                    R.id.libraryFragment, R.id.searchFragment, R.id.settingsFragment -> true
+                    else -> false
                 }
-            )
+            }
         }
     }
 }

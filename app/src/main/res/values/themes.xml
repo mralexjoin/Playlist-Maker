@@ -10,6 +10,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnTertiary">@color/gray</item>
         <item name="colorOnTertiaryContainer">@color/gray_light</item>
+        <item name="materialAlertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />

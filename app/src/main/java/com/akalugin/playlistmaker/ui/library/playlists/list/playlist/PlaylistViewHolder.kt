@@ -9,6 +9,7 @@ import com.akalugin.playlistmaker.domain.playlists.models.Playlist
 import com.akalugin.playlistmaker.ui.library.playlists.utils.PlaylistUtils
 import com.akalugin.playlistmaker.ui.utils.Utils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class PlaylistViewHolder(
@@ -34,8 +35,7 @@ class PlaylistViewHolder(
             Glide.with(itemView)
                 .load(model.imagePath)
                 .placeholder(R.drawable.album_placeholder)
-                .fitCenter()
-                .transform(RoundedCorners(imageCornerRadiusPx))
+                .transform(CenterCrop(), RoundedCorners(imageCornerRadiusPx))
                 .into(playlistImageView)
         }
     }

@@ -1,11 +1,11 @@
 package com.akalugin.playlistmaker.ui.library.playlists.playlist.framents
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -14,6 +14,7 @@ import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.FragmentPlaylistBinding
 import com.akalugin.playlistmaker.domain.playlists.models.Playlist
 import com.akalugin.playlistmaker.domain.track.models.Track
+import com.akalugin.playlistmaker.ui.library.playlists.creation.fragments.EditPlaylistFragment
 import com.akalugin.playlistmaker.ui.library.playlists.playlist.models.PlaylistScreenState
 import com.akalugin.playlistmaker.ui.library.playlists.playlist.models.PlaylistSingleLiveEvent
 import com.akalugin.playlistmaker.ui.library.playlists.playlist.view_model.PlaylistViewModel
@@ -22,6 +23,8 @@ import com.akalugin.playlistmaker.ui.root.RootActivity
 import com.akalugin.playlistmaker.ui.search.track.TrackAdapter
 import com.akalugin.playlistmaker.ui.utils.Utils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -63,6 +66,10 @@ class PlaylistFragment : Fragment() {
                 viewModel.sharePlaylist()
             }
 
+            editPlaylistTextView.setOnClickListener {
+                viewModel.editPlaylist()
+            }
+
             deletePlaylistTextView.setOnClickListener {
                 showDeleteDialog()
             }
@@ -76,7 +83,6 @@ class PlaylistFragment : Fragment() {
         setupBottomSheets()
 
         val playlistId = arguments?.getInt(PLAYLIST_ID_EXTRA)
-        Log.d("NPE", "onViewCreated, playlistId = $playlistId")
         viewModel.loadPlaylist(playlistId)
     }
 
@@ -95,13 +101,19 @@ class PlaylistFragment : Fragment() {
                     Glide.with(it)
                         .load(imagePath)
                         .placeholder(R.drawable.album_placeholder)
-                        .fitCenter()
+                        .centerCrop()
                         .into(playlistImageView)
 
+
+                    val imageCornerRadiusPx =
+                        Utils.dpToPx(
+                            it.resources.getDimension(R.dimen.track_view_artwork_corner_radius),
+                            it
+                        )
                     Glide.with(it)
                         .load(imagePath)
                         .placeholder(R.drawable.album_placeholder)
-                        .fitCenter()
+                        .transform(CenterCrop(), RoundedCorners(imageCornerRadiusPx))
                         .into(smallPlaylistInfoLayout.smallPlaylistImageView)
                 }
 
@@ -111,7 +123,7 @@ class PlaylistFragment : Fragment() {
                 val trackCountText = PlaylistUtils.getTrackCount(resources, trackCount)
 
                 playlistNameTextView.text = name
-                playlistDescriptionTextView.text = name
+                playlistDescriptionTextView.text = description
                 playlistDurationTextView.text = durationText
                 playlistTrackCountTextView.text = trackCountText
 
@@ -181,6 +193,10 @@ class PlaylistFragment : Fragment() {
         when (event) {
             is PlaylistSingleLiveEvent.ToastEvent -> processToastEvent(event)
             is PlaylistSingleLiveEvent.CloseEvent -> findNavController().popBackStack()
+            is PlaylistSingleLiveEvent.EditPlaylistEvent -> findNavController().navigate(
+                R.id.action_playlistFragment_to_newPlaylistFragment,
+                bundleOf(EditPlaylistFragment.PLAYLIST_KEY_EXTRA to event.playlist)
+            )
         }
     }
 
@@ -217,12 +233,12 @@ class PlaylistFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        (activity as? RootActivity)?.hideToolbar()
+        (activity as? RootActivity)?.toolbar?.isVisible = false
     }
 
     override fun onStop() {
         super.onStop()
-        (activity as? RootActivity)?.hideToolbar()
+        (activity as? RootActivity)?.toolbar?.isVisible = true
     }
 
     companion object {

@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistEntity
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistEntityWithTrackCount
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistTrackCrossRef
@@ -16,7 +17,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlaylistsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addPlaylist(playlistEntity: PlaylistEntity)
+    suspend fun insertPlaylist(playlistEntity: PlaylistEntity)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updatePlaylist(playlistEntity: PlaylistEntity)
 
     @Query(
         "SELECT playlists.*, COUNT(playlists_tracks.trackId) AS trackCount " +

@@ -26,12 +26,12 @@
         style="@style/PlaylistTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/trackCountTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlistImageView"
-        app:layout_constraintWidth_default="wrap"
         tools:text="Наименование плейлиста" />
 
     <TextView
@@ -39,12 +39,12 @@
         style="@style/PlaylistTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/playlistNameTextView"
-        app:layout_constraintWidth_default="wrap"
         tools:text="Количество треков 12 343 45454546 6 66" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:contentDescription="@string/playlist_image_description"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent=".45"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,6 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/playlist_image_margin"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/playlistDotImageView"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -103,10 +105,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/playlist_image_margin"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBaseline_toBaselineOf="@id/playlistDurationTextView"
             app:layout_constraintEnd_toStartOf="@id/rightGuideline"
             app:layout_constraintStart_toEndOf="@id/playlistDotImageView"
-            app:layout_constraintWidth_default="wrap"
             tools:text="0 треков" />
 
         <ImageButton
@@ -202,7 +204,7 @@
         <TextView
             android:id="@+id/editPlaylistTextView"
             style="@style/SettingsItemStyle"
-            android:text="@string/edit" />
+            android:text="@string/edit_playlist" />
 
         <TextView
             android:id="@+id/deletePlaylistTextView"

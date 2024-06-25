@@ -1,8 +1,9 @@
 package com.akalugin.playlistmaker.di
 
+import com.akalugin.playlistmaker.domain.playlists.models.Playlist
 import com.akalugin.playlistmaker.domain.track.models.Track
 import com.akalugin.playlistmaker.ui.library.favorites.view_model.FavoritesViewModel
-import com.akalugin.playlistmaker.ui.library.playlists.creation.view_model.NewPlaylistViewModel
+import com.akalugin.playlistmaker.ui.library.playlists.creation.view_model.EditPlaylistViewModel
 import com.akalugin.playlistmaker.ui.library.playlists.list.view_model.PlaylistsViewModel
 import com.akalugin.playlistmaker.ui.library.playlists.playlist.view_model.PlaylistViewModel
 import com.akalugin.playlistmaker.ui.player.view_model.AudioPlayerViewModel
@@ -23,6 +24,9 @@ val viewModelModule = module {
 
     viewModelOf(::FavoritesViewModel)
     viewModelOf(::PlaylistsViewModel)
-    viewModelOf(::NewPlaylistViewModel)
     viewModelOf(::PlaylistViewModel)
+
+    viewModel { (playlist: Playlist) ->
+        EditPlaylistViewModel(playlist, get(), get())
+    }
 }

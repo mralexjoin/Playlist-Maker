@@ -1,7 +1,6 @@
 package com.akalugin.playlistmaker.ui.library.playlists.list.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +60,6 @@ class PlaylistsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        Log.d("NPE", "onStart")
         viewModel.updatePlaylists()
     }
 

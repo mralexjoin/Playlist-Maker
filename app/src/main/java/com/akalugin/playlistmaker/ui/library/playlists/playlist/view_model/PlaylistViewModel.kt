@@ -73,4 +73,8 @@ class PlaylistViewModel(
             }
         }
     }
+
+    fun editPlaylist() {
+        _singleLiveEvent.postValue(PlaylistSingleLiveEvent.EditPlaylistEvent(playlist))
+    }
 }

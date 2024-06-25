@@ -52,9 +52,14 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/newPlaylistFragment"
-        android:name="com.akalugin.playlistmaker.ui.library.playlists.creation.fragments.NewPlaylistFragment"
+        android:name="com.akalugin.playlistmaker.ui.library.playlists.creation.fragments.EditPlaylistFragment"
         android:label="@string/new_playlist"
-        tools:layout="@layout/fragment_new_playlist" />
+        tools:layout="@layout/fragment_new_playlist" >
+        <argument
+            android:name="playlist"
+            app:argType="com.akalugin.playlistmaker.domain.playlists.models.Playlist"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/audioPlayerFragment"
         android:name="com.akalugin.playlistmaker.ui.player.fragments.AudioPlayerFragment"
@@ -83,5 +88,8 @@
         <action
             android:id="@+id/action_playlistFragment_to_audioPlayerFragment"
             app:destination="@id/audioPlayerFragment" />
+        <action
+            android:id="@+id/action_playlistFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
     </fragment>
 </navigation>

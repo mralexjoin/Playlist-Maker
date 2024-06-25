@@ -62,12 +62,14 @@
     <string name="empty_playlist_share_message">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="track_to_share">%1$d. %2$s - %3$s (%4$s)</string>
     <string name="share_playlist">Поделиться</string>
-    <string name="edit">Редактировать</string>
+    <string name="edit_playlist">Редактировать</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="delete_playlist_dialog_message">Хотите удалить плейлист?</string>
     <string name="delete_playlist_dialog_header">Удалить плейлист</string>
     <string name="delete">Удалить</string>
+    <string name="playlist_updated_message">Плейлист %1$s обновлен</string>
+    <string name="save_playlist">Сохранить</string>
     <plurals name="number_of_tracks">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трекa</item>

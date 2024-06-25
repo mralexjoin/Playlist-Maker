@@ -1,6 +1,5 @@
 package com.akalugin.playlistmaker.ui.library.playlists.list.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +17,6 @@ class PlaylistsViewModel(
         get() = _state
 
     fun updatePlaylists() {
-        Log.d("NPE", "Update started")
         _state.postValue(PlaylistsScreenState.Loading)
         viewModelScope.launch {
             playlistInteractor.getPlaylistsWithTrackCount().collect { playlists ->

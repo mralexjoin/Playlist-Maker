@@ -58,10 +58,13 @@ class PlaylistViewModel(
 
     fun sharePlaylist() {
         playlist.let { currentPlaylist ->
-            if (currentPlaylist == null || currentPlaylist.trackCount == 0)
-                _singleLiveEvent.postValue(PlaylistSingleLiveEvent.ToastEvent.EmptyPlaylist)
-            else
+            if (currentPlaylist == null || currentPlaylist.trackCount == 0) {
+                _singleLiveEvent.postValue(PlaylistSingleLiveEvent.EmptyPlaylist)
+            }
+            else {
                 sharingInteractor.sharePlaylist(currentPlaylist)
+                _singleLiveEvent.postValue(PlaylistSingleLiveEvent.HideMenu)
+            }
         }
     }
 

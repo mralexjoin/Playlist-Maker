@@ -186,15 +186,20 @@ class PlaylistFragment : Fragment() {
             BottomSheetBehavior.from(playlistTracksBottomSheet)
                 .addBottomSheetCallback(bottomSheetCallback)
             BottomSheetBehavior.from(moreActionsBottomSheet).apply {
-                state = BottomSheetBehavior.STATE_HIDDEN
                 addBottomSheetCallback(bottomSheetCallback)
             }
+            hideActions()
         }
     }
 
     private fun processEvent(event: PlaylistSingleLiveEvent) {
         when (event) {
-            is PlaylistSingleLiveEvent.ToastEvent -> processToastEvent(event)
+            is PlaylistSingleLiveEvent.EmptyPlaylist -> {
+                hideActions()
+                showToast(getString(R.string.empty_playlist_share_message))
+            }
+
+            is PlaylistSingleLiveEvent.HideMenu -> hideActions()
             is PlaylistSingleLiveEvent.CloseEvent -> findNavController().popBackStack()
             is PlaylistSingleLiveEvent.EditPlaylistEvent -> findNavController().navigate(
                 R.id.action_playlistFragment_to_newPlaylistFragment,
@@ -203,14 +208,9 @@ class PlaylistFragment : Fragment() {
         }
     }
 
-    private fun processToastEvent(event: PlaylistSingleLiveEvent.ToastEvent) {
-        showToast(
-            when (event) {
-                is PlaylistSingleLiveEvent.ToastEvent.EmptyPlaylist -> {
-                    getString(R.string.empty_playlist_share_message)
-                }
-            }
-        )
+    private fun hideActions() {
+        BottomSheetBehavior.from(binding.moreActionsBottomSheet).state =
+            BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun showDeleteDialog() {

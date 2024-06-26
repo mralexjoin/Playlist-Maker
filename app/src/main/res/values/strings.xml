@@ -70,6 +70,7 @@
     <string name="delete">Удалить</string>
     <string name="playlist_updated_message">Плейлист %1$s обновлен</string>
     <string name="save_playlist">Сохранить</string>
+    <string name="empty_playlist_message">В этом плейлисте нет треков</string>
     <plurals name="number_of_tracks">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трекa</item>

@@ -127,12 +127,15 @@ class PlaylistFragment : Fragment() {
                 playlistDurationTextView.text = durationText
                 playlistTrackCountTextView.text = trackCountText
 
-                trackAdapter.setItemsWithDiff(tracks)
-
                 with(smallPlaylistInfoLayout) {
                     smallPlaylistNameTextView.text = name
                     smallPlaylistTrackCountTextView.text = trackCountText
                 }
+
+                trackAdapter.setItemsWithDiff(tracks)
+
+                emptyPlaylistTextView.isVisible = tracks.isEmpty()
+                playlistTracksRecyclerView.isVisible = tracks.isNotEmpty()
             }
         }
     }

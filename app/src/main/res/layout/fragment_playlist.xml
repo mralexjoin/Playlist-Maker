@@ -171,10 +171,21 @@
             style="@style/BottomSheetDecoration"
             android:importantForAccessibility="no" />
 
+        <TextView
+            android:id="@+id/emptyPlaylistTextView"
+            style="@style/ErrorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/common_medium_margin"
+            android:text="@string/empty_playlist_message"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlistTracksRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:visibility="gone" />
 
     </LinearLayout>
 

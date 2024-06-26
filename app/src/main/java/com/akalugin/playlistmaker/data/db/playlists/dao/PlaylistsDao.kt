@@ -84,22 +84,14 @@ interface PlaylistsDao {
     @Delete
     suspend fun deletePlaylistTrackCrossRef(playlistTrackCrossRef: PlaylistTrackCrossRef)
 
-    suspend fun deleteOrphanTracks(trackIds: List<Int>) {
-        val ids = trackIdsWithoutPlaylists(trackIds)
-        if (ids.isNotEmpty()) {
-            deleteTracksByIds(ids)
-        }
-    }
-
     @Query(
-        "SELECT tracks.trackId " +
+        "DELETE FROM tracks WHERE trackId IN (" +
+                "SELECT tracks.trackId " +
                 "FROM tracks " +
                 "LEFT JOIN playlists_tracks " +
                 "ON tracks.trackId = playlists_tracks.trackId " +
-                "WHERE tracks.trackId IN (:trackIds) AND playlists_tracks.trackId IS NULL"
+                "WHERE tracks.trackId IN (:trackIds) AND playlists_tracks.trackId IS NULL" +
+                ")"
     )
-    suspend fun trackIdsWithoutPlaylists(trackIds: List<Int>): List<Int>
-
-    @Query("DELETE FROM tracks WHERE trackId IN (:trackIds)")
-    suspend fun deleteTracksByIds(trackIds: List<Int>)
+    suspend fun deleteOrphanTracks(trackIds: List<Int>)
 }

@@ -233,6 +233,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/trackInfoHeaderBarrier"
             app:layout_constraintTop_toBottomOf="@id/trackTimeTextView"
+            app:layout_constraintWidth_default="wrap"
             tools:text="Yesterday Yesterday Yesterday Yesterday(Remastered 2009)" />
 
         <TextView
@@ -247,6 +248,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/trackInfoHeaderBarrier"
             app:layout_constraintTop_toBottomOf="@id/albumTextView"
+            app:layout_constraintWidth_default="wrap"
             tools:text="1965" />
 
         <TextView

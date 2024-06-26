@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class PlaylistWithTracks(
+data class PlaylistWithTracksAndCrossRef(
     @Embedded val playlistEntity: PlaylistEntity,
     @Relation(
         parentColumn = "playlistId",
@@ -12,4 +12,10 @@ data class PlaylistWithTracks(
         associateBy = Junction(PlaylistTrackCrossRef::class)
     )
     val tracks: List<TrackEntity>,
+    @Relation(
+        entity = PlaylistTrackCrossRef::class,
+        parentColumn = "playlistId",
+        entityColumn = "playlistId",
+    )
+    val refs: List<PlaylistTrackCrossRef>,
 )

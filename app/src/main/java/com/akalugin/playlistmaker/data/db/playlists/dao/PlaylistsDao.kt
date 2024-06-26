@@ -11,8 +11,10 @@ import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistEntity
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistEntityWithTrackCount
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistTrackCrossRef
 import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistWithTracks
+import com.akalugin.playlistmaker.data.db.playlists.entity.PlaylistWithTracksAndCrossRef
 import com.akalugin.playlistmaker.data.db.playlists.entity.TrackEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Dao
 interface PlaylistsDao {
@@ -35,9 +37,22 @@ interface PlaylistsDao {
     @Query("SELECT * FROM playlists")
     fun getPlaylistsWithTracks(): Flow<List<PlaylistWithTracks>>
 
+    fun getPlaylistWithTracks(playlistId: Int): Flow<PlaylistWithTracks?> =
+        getPlaylistWithTracksAndCrossRefs(playlistId).map {
+            it?.run {
+                val sortedRefs = refs.sortedByDescending { ref -> ref.timestamp }
+                PlaylistWithTracks(
+                    playlistEntity,
+                    tracks.sortedBy { track ->
+                        sortedRefs.indexOfFirst { ref -> ref.trackId == track.trackId }
+                    }
+                )
+            }
+        }
+
     @Transaction
     @Query("SELECT * FROM playlists WHERE playlistId = :playlistId")
-    fun getPlaylistWithTracks(playlistId: Int): Flow<PlaylistWithTracks?>
+    fun getPlaylistWithTracksAndCrossRefs(playlistId: Int): Flow<PlaylistWithTracksAndCrossRef?>
 
     @Transaction
     suspend fun addTrackToPlaylist(trackEntity: TrackEntity, playlistId: Int) {

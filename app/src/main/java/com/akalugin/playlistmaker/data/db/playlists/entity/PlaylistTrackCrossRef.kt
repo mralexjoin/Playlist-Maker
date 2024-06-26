@@ -21,9 +21,10 @@ import androidx.room.Index
             childColumns = ["trackId"],
         )
     ],
-    indices = [Index("playlistId"), Index("trackId")]
+    indices = [Index("playlistId"), Index("trackId")],
 )
 data class PlaylistTrackCrossRef(
     val playlistId: Int,
     val trackId: Int,
+    val timestamp: Long = System.currentTimeMillis(),
 )

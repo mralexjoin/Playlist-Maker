@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/playlistLayout"
+    android:id="@+id/smallPlaylistLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/grid_layout_padding">
@@ -29,22 +29,22 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <ImageView
-        android:id="@+id/playlistImageView"
+        android:id="@+id/smallPlaylistImageView"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_margin="8dp"
         android:contentDescription="@string/playlist_image_description"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/playlistNameTextView"
+        app:layout_constraintEnd_toStartOf="@+id/smallPlaylistNameTextView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/album_placeholder" />
 
     <TextView
-        android:id="@+id/playlistNameTextView"
+        android:id="@+id/smallPlaylistNameTextView"
         style="@style/PlaylistTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,13 +52,13 @@
         app:layout_constraintBottom_toTopOf="@id/centerGuideLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/playlistImageView"
+        app:layout_constraintStart_toEndOf="@id/smallPlaylistImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1"
         tools:text="Наименование плейлиста gd gfgf  fg fg fdhfghgf fdh gh h fhf" />
 
     <TextView
-        android:id="@+id/trackCountTextView"
+        android:id="@+id/smallPlaylistTrackCountTextView"
         style="@style/PlaylistTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -66,9 +66,9 @@
         android:textColor="?attr/colorOnTertiary"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/playlistNameTextView"
+        app:layout_constraintEnd_toEndOf="@id/smallPlaylistNameTextView"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/playlistNameTextView"
+        app:layout_constraintStart_toStartOf="@+id/smallPlaylistNameTextView"
         app:layout_constraintTop_toBottomOf="@id/centerGuideLine"
         app:layout_constraintVertical_bias="0"
         tools:text="Количество треков 12 343 45454546 6 66ffdfd gggg g gg gfg fgfg" />

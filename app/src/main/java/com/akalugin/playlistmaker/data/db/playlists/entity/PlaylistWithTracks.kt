@@ -1,7 +1,6 @@
 package com.akalugin.playlistmaker.data.db.playlists.entity
 
 import androidx.room.Embedded
-import androidx.room.Entity
 import androidx.room.Junction
 import androidx.room.Relation
 

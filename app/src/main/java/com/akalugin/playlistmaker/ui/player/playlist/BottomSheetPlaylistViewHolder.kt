@@ -6,7 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akalugin.playlistmaker.R
 import com.akalugin.playlistmaker.databinding.SmallPlaylistViewBinding
 import com.akalugin.playlistmaker.domain.playlists.models.Playlist
+import com.akalugin.playlistmaker.ui.library.playlists.utils.PlaylistUtils
+import com.akalugin.playlistmaker.ui.utils.Utils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class BottomSheetPlaylistViewHolder(
     parentView: ViewGroup,
@@ -19,20 +23,22 @@ class BottomSheetPlaylistViewHolder(
         with(binding) {
             val context = itemView.context
 
-            playlistNameTextView.text = model.name
+            smallPlaylistNameTextView.text = model.name
             val trackCount = model.trackCount
-            trackCountTextView.text =
-                context.resources.getQuantityString(
-                    R.plurals.number_of_tracks,
-                    trackCount,
-                    trackCount
+            smallPlaylistTrackCountTextView.text =
+                PlaylistUtils.getTrackCount(context.resources, trackCount)
+
+            val imageCornerRadiusPx =
+                Utils.dpToPx(
+                    context.resources.getDimension(R.dimen.track_view_artwork_corner_radius),
+                    context
                 )
 
             Glide.with(itemView)
                 .load(model.imagePath)
                 .placeholder(R.drawable.album_placeholder)
-                .fitCenter()
-                .into(playlistImageView)
+                .transform(CenterCrop(), RoundedCorners(imageCornerRadiusPx))
+                .into(smallPlaylistImageView)
         }
     }
 }

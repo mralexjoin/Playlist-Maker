@@ -233,6 +233,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/trackInfoHeaderBarrier"
             app:layout_constraintTop_toBottomOf="@id/trackTimeTextView"
+            app:layout_constraintWidth_default="wrap"
             tools:text="Yesterday Yesterday Yesterday Yesterday(Remastered 2009)" />
 
         <TextView
@@ -247,6 +248,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/trackInfoHeaderBarrier"
             app:layout_constraintTop_toBottomOf="@id/albumTextView"
+            app:layout_constraintWidth_default="wrap"
             tools:text="1965" />
 
         <TextView
@@ -293,7 +295,7 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/playlists_bottom_sheet"
+        android:id="@+id/playlistsBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_bg"
@@ -303,12 +305,7 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/bottom_sheet_decoration_background"
+            style="@style/BottomSheetDecoration"
             android:importantForAccessibility="no" />
 
         <TextView

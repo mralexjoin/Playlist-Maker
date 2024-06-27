@@ -12,6 +12,9 @@ import com.akalugin.playlistmaker.databinding.ActivityRootBinding
 class RootActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRootBinding
 
+    val toolbar
+        get() = binding.toolbar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -19,14 +19,16 @@ object PlaylistMapper {
             )
         }
 
-    fun mapToPlaylist(playlistWithTracks: PlaylistWithTracks) = with(playlistWithTracks) {
-        Playlist(
-            playlistEntity.playlistId,
-            playlistEntity.name,
-            playlistEntity.imagePath,
-            playlistEntity.description,
-            tracks.map(::mapToTrack),
-        )
+    fun mapToPlaylist(playlistWithTracks: PlaylistWithTracks?) = playlistWithTracks?.let {
+        with(it) {
+            Playlist(
+                playlistEntity.playlistId,
+                playlistEntity.name,
+                playlistEntity.imagePath,
+                playlistEntity.description,
+                tracks.map(::mapToTrack),
+            )
+        }
     }
 
     private fun mapToTrack(trackEntity: TrackEntity) = with(trackEntity) {
@@ -34,6 +36,7 @@ object PlaylistMapper {
             trackId,
             trackName,
             artistName,
+            trackTimeMillis,
             trackTime,
             artworkUrl100,
             collectionName,
@@ -59,6 +62,7 @@ object PlaylistMapper {
             trackId,
             trackName,
             artistName,
+            trackTimeMillis,
             trackTime,
             artworkUrl100,
             collectionName,
@@ -69,4 +73,10 @@ object PlaylistMapper {
             bigArtworkUrl
         )
     }
+
+    fun mapToPlaylistWithTracks(playlist: Playlist) =
+        PlaylistWithTracks(
+            mapToPlaylistEntity(playlist),
+            playlist.tracks.map(::mapToTrackEntity)
+        )
 }

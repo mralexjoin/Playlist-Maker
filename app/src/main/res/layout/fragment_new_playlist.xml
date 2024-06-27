@@ -5,7 +5,7 @@
     android:id="@+id/newPlaylistConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.library.playlists.creation.fragments.NewPlaylistFragment">
+    tools:context=".ui.library.playlists.creation.fragments.EditPlaylistFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/startEditTextGuideline"
@@ -32,16 +32,15 @@
         android:scaleType="centerInside"
         android:src="@drawable/add_playlist_image"
         app:layout_constraintBottom_toTopOf="@id/playlistNameTextInputLayout"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
         app:layout_constraintStart_toEndOf="@id/startEditTextGuideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/playlistNameTextInputLayout"
-        android:layout_width="0dp"
         style="@style/NewPlaylistTextInputLayoutStyle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/double_medium_margin"
         app:layout_constraintBottom_toTopOf="@id/playlistDescriptionTextInputLayout"
@@ -60,8 +59,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/playlistDescriptionTextInputLayout"
-        android:layout_width="0dp"
         style="@style/NewPlaylistTextInputLayoutStyle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_medium_margin"
         app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
@@ -86,9 +85,9 @@
         android:layout_marginBottom="@dimen/double_medium_margin"
         android:enabled="false"
         android:text="@string/create_playlist"
-        tools:enabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/endEditTextGuideline"
-        app:layout_constraintStart_toEndOf="@id/startEditTextGuideline" />
+        app:layout_constraintStart_toEndOf="@id/startEditTextGuideline"
+        tools:enabled="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

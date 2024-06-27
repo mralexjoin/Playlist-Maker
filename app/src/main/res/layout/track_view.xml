@@ -39,17 +39,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/dotImageView"
+        app:layout_constraintEnd_toStartOf="@id/trackDotImageView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@id/trackNameTextView"
         app:layout_constraintTop_toBottomOf="@id/trackNameTextView"
         app:layout_constraintWidth_default="wrap"
-        tools:text="The Beatles one two three four five six seven eight nine" />
+        tools:text="0" />
 
     <ImageView
-        android:id="@+id/dotImageView"
+        android:id="@+id/trackDotImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:importantForAccessibility="no"
@@ -67,7 +68,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@id/artistNameTextView"
         app:layout_constraintEnd_toEndOf="@id/trackNameTextView"
-        app:layout_constraintStart_toEndOf="@id/dotImageView"
+        app:layout_constraintStart_toEndOf="@id/trackDotImageView"
         tools:text="4:01" />
 
     <ImageView

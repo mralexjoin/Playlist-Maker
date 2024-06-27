@@ -2,12 +2,12 @@ package com.akalugin.playlistmaker.ui.library.playlists.list.models
 
 import com.akalugin.playlistmaker.domain.playlists.models.Playlist
 
-sealed interface PlaylistScreenState {
-    data object Loading : PlaylistScreenState
+sealed interface PlaylistsScreenState {
+    data object Loading : PlaylistsScreenState
 
     data class Content(
         val playlists: List<Playlist>,
-    ) : PlaylistScreenState
+    ) : PlaylistsScreenState
 
-    data object Empty : PlaylistScreenState
+    data object Empty : PlaylistsScreenState
 }
